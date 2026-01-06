@@ -168,7 +168,7 @@ export default function QuoteForm() {
           <div className="flex-1 flex flex-col justify-center">
             <FormStep isActive={step === 1} direction={direction}>
               <div className="space-y-8">
-                <h1 className="text-3xl md:text-4xl font-bold">What's your name and number?</h1>
+                <h1 className="text-3xl md:text-4xl font-bold">Personal Information</h1>
                 <div className="space-y-6">
                   <input
                     type="text"
