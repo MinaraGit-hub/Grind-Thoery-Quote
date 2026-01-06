@@ -261,22 +261,22 @@ export default function QuoteForm() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center py-0 md:py-12 px-0 md:px-6 overflow-x-hidden">
+    <div className="min-h-screen bg-background flex flex-col items-center py-6 md:py-12 px-4 md:px-6 overflow-x-hidden">
       {/* Progress Bar - Desktop Only */}
-      <div className="hidden md:block w-full max-w-5xl mb-12">
+      <div className="hidden md:block w-full max-w-5xl mb-8">
         <CircularProgress currentStep={step} totalSteps={displaySteps} className="scale-100" />
       </div>
       {/* Main Container: Full screen on mobile, limited on desktop */}
-      <div className="w-full max-w-5xl md:aspect-[16/10] bg-card md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border-0 md:border border-card-border/50 min-h-screen md:min-h-0">
+      <div className="w-full max-w-5xl md:min-h-[650px] bg-card md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border-0 md:border border-card-border/50">
         
         {/* Left Side: Image */}
         <div 
-          className="w-full md:w-1/2 bg-cover bg-[center_top] h-48 md:h-auto shrink-0"
+          className="w-full md:w-5/12 bg-cover bg-center h-48 md:h-auto shrink-0"
           style={{ backgroundImage: `url(${stockImage})` }}
         />
 
         {/* Right Side: Form Content */}
-        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col text-card-foreground relative flex-1">
+        <div className="w-full md:w-7/12 p-6 md:p-10 flex flex-col text-card-foreground relative min-h-[500px]">
           
           {/* Mobile Progress Indicator */}
           <div className="md:hidden flex justify-between items-center mb-6">
@@ -437,12 +437,12 @@ export default function QuoteForm() {
             <FormStep isActive={step === 4} direction={direction}>
               <div className="space-y-6 md:space-y-8">
                 <h1 className="text-3xl md:text-4xl font-bold">What type of event is it?</h1>
-                <div className="grid grid-cols-1 gap-3 max-h-[400px] md:max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="grid grid-cols-1 gap-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                   {Object.keys(settings?.eventSurplus || {}).map((type) => (
                     <button
                       key={type}
                       onClick={() => setFormData({ ...formData, eventType: type })}
-                      className={`w-full py-4 rounded-xl md:rounded-2xl text-lg font-medium border transition-all ${
+                      className={`w-full py-3.5 rounded-xl md:rounded-2xl text-lg font-medium border transition-all ${
                         formData.eventType === type 
                           ? "bg-white text-[#6B5E51] border-white shadow-lg" 
                           : "bg-white/5 border-white/10 hover:bg-white/10"
@@ -458,12 +458,12 @@ export default function QuoteForm() {
             <FormStep isActive={step === 5} direction={direction}>
               <div className="space-y-6">
                 <h1 className="text-3xl md:text-4xl font-bold">Signature Drinks</h1>
-                <div className="space-y-3 max-h-[400px] md:max-h-[320px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                   {Object.keys(formData.signatureDrinks).map((drink) => {
                     if (drink === "Iced dirty matcha" && formData.eventType !== "Matcha") return null; 
                     
                     return (
-                      <div key={drink} className="flex items-center justify-between p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
+                      <div key={drink} className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
                         <span className="text-lg flex-1 mr-4">{drink}</span>
                         <div className="flex items-center gap-4 bg-white/10 rounded-xl px-2 py-1">
                           <button 
@@ -491,11 +491,11 @@ export default function QuoteForm() {
             <FormStep isActive={step === 6} direction={direction}>
               <div className="space-y-6">
                 <h1 className="text-3xl md:text-4xl font-bold">Custom Upgrade</h1>
-                <div className="space-y-6 max-h-[400px] md:max-h-[380px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-6 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                   <section className="space-y-3">
                     <p className="text-lg font-semibold opacity-70">Matcha Upgrade</p>
                     {Object.keys(formData.matchaUpgrade).map((drink) => (
-                      <div key={drink} className="flex items-center justify-between p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
+                      <div key={drink} className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
                         <span className="text-lg flex-1 mr-4">{drink}</span>
                         <div className="flex items-center gap-4 bg-white/10 rounded-xl px-2 py-1">
                           <button 
