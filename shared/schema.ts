@@ -37,6 +37,7 @@ export const submissions = pgTable("submissions", {
   cannedBeverages: text("canned_beverages").notNull().default("none"),
   bakedGoods: jsonb("baked_goods").$type<{ count: number; useBulk: boolean }>().notNull().default({ count: 0, useBulk: false }),
   alternativeMilk: integer("alternative_milk").notNull().default(0),
+  guestCount: text("guest_count").notNull().default("1–30"),
   calculatedCost: integer("calculated_cost").notNull(),
   status: text("status").notNull().default("new"),
   createdAt: timestamp("created_at").defaultNow(),

@@ -31,7 +31,8 @@ export default function QuoteForm() {
     } as Record<string, number>,
     cannedBeverages: "none",
     bakedGoods: { count: 0, useBulk: false },
-    alternativeMilk: 0
+    alternativeMilk: 0,
+    guestCount: "1–30",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -73,6 +74,18 @@ export default function QuoteForm() {
     if (formData.hasAddon) {
       finalCost += 650;
     }
+
+    // Apply guest count modifier
+    const guestModifiers: Record<string, number> = {
+      "1–30": 0,
+      "30–60": 10,
+      "60–100": 25,
+      "100–150": 40,
+      "150–250": 65,
+      "250+": 75
+    };
+    const guestModifier = guestModifiers[formData.guestCount] || 0;
+    finalCost = Math.round(finalCost * (1 + guestModifier / 100));
 
     // Add signature drinks cost: $10 per additional drink
     const totalSigDrinks = Object.values(formData.signatureDrinks).reduce((a, b) => a + b, 0);
@@ -194,6 +207,7 @@ export default function QuoteForm() {
         eventType: formData.eventType,
         hours: finalHours,
         hasAddon: formData.hasAddon,
+        guestCount: formData.guestCount,
         signatureDrinks: formData.signatureDrinks,
         matchaUpgrade: formData.matchaUpgrade,
         cannedBeverages: formData.cannedBeverages,
@@ -330,7 +344,26 @@ export default function QuoteForm() {
                   </ul>
                 </div>
 
-                <div className="mt-8">
+                <div className="mt-8 space-y-6">
+                  <div className="space-y-3">
+                    <p className="text-lg font-semibold opacity-70">Guest Count Modifier</p>
+                    <div className="relative">
+                      <select 
+                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30"
+                        value={formData.guestCount}
+                        onChange={(e) => setFormData({ ...formData, guestCount: e.target.value })}
+                      >
+                        <option value="1–30" className="bg-[#6B5E51]">1–30 (+0%)</option>
+                        <option value="30–60" className="bg-[#6B5E51]">30–60 (+10%)</option>
+                        <option value="60–100" className="bg-[#6B5E51]">60–100 (+25%)</option>
+                        <option value="100–150" className="bg-[#6B5E51]">100–150 (+40%)</option>
+                        <option value="150–250" className="bg-[#6B5E51]">150–250 (+65%)</option>
+                        <option value="250+" className="bg-[#6B5E51]">250+ (+75%)</option>
+                      </select>
+                      <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
+                    </div>
+                  </div>
+
                   <label className="flex items-center gap-3 p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
                     <div className="relative flex items-center justify-center">
                       <input
