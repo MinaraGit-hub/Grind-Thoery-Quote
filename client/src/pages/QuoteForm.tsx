@@ -52,10 +52,10 @@ export default function QuoteForm() {
       }
     }
     if (step === 2) {
-      if (!formData.eventType) {
+      if (!formData.hours) {
         toast({
           title: "Selection required",
-          description: "Please select an event type.",
+          description: "Please select the number of hours.",
           variant: "destructive",
         });
         return;
@@ -71,10 +71,10 @@ export default function QuoteForm() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.hours) {
+    if (!formData.eventType) {
       toast({
         title: "Selection required",
-        description: "Please select the number of hours.",
+        description: "Please select an event type.",
         variant: "destructive",
       });
       return;
@@ -142,7 +142,7 @@ export default function QuoteForm() {
       <div className="w-full max-w-5xl aspect-[16/10] bg-card rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-card-border/50">
         {/* Left Side: Image */}
         <div 
-          className="w-full md:w-1/2 bg-cover bg-center h-48 md:h-auto"
+          className="w-full md:w-1/2 bg-cover bg-[center_top] h-48 md:h-auto"
           style={{ backgroundImage: `url(${stockImage})` }}
         />
 
@@ -173,27 +173,6 @@ export default function QuoteForm() {
 
             <FormStep isActive={step === 2} direction={direction}>
               <div className="space-y-8">
-                <h1 className="text-3xl md:text-4xl font-bold">What type of event is it?</h1>
-                <div className="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                  {Object.keys(settings?.eventSurplus || {}).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setFormData({ ...formData, eventType: type })}
-                      className={`w-full py-3 rounded-2xl text-lg font-medium border transition-all ${
-                        formData.eventType === type 
-                          ? "bg-white text-card border-white shadow-lg" 
-                          : "bg-white/5 border-white/10 hover:bg-white/10"
-                      }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </FormStep>
-
-            <FormStep isActive={step === 3} direction={direction}>
-              <div className="space-y-8">
                 <h1 className="text-3xl md:text-4xl font-bold">How many hours?</h1>
                 <div className="grid grid-cols-2 gap-4">
                   {Object.keys(settings?.hourlyRates || {}).map((h) => (
@@ -207,6 +186,27 @@ export default function QuoteForm() {
                       }`}
                     >
                       {h} Hour{h !== "1" ? "s" : ""}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </FormStep>
+
+            <FormStep isActive={step === 3} direction={direction}>
+              <div className="space-y-8">
+                <h1 className="text-3xl md:text-4xl font-bold">What type of event is it?</h1>
+                <div className="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                  {Object.keys(settings?.eventSurplus || {}).map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setFormData({ ...formData, eventType: type })}
+                      className={`w-full py-3 rounded-2xl text-lg font-medium border transition-all ${
+                        formData.eventType === type 
+                          ? "bg-white text-card border-white shadow-lg" 
+                          : "bg-white/5 border-white/10 hover:bg-white/10"
+                      }`}
+                    >
+                      {type}
                     </button>
                   ))}
                 </div>
