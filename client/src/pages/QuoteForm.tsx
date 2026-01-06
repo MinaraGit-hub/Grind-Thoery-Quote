@@ -290,7 +290,7 @@ export default function QuoteForm() {
             Thank you, {formData.fullName}. Quote received for your {formData.eventType}. We will be in touch with you shortly.
           </p>
           <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
-            <p className="text-sm uppercase tracking-widest opacity-60 mb-1">Total Quote</p>
+            <p className="text-sm uppercase tracking-widest opacity-60 mb-1">Estimated Cost</p>
             <p className="text-5xl font-bold">${calculatedCost}</p>
           </div>
           <button onClick={() => window.location.reload()} className="mt-8 opacity-60 hover:opacity-100 transition-opacity">
