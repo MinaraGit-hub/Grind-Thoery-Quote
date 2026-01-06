@@ -246,7 +246,6 @@ export default function QuoteForm() {
       <div className="hidden md:block w-full max-w-5xl mb-12">
         <CircularProgress currentStep={step} totalSteps={displaySteps} className="scale-100" />
       </div>
-
       {/* Main Container: Full screen on mobile, limited on desktop */}
       <div className="w-full max-w-5xl md:aspect-[16/10] bg-card md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border-0 md:border border-card-border/50 min-h-screen md:min-h-0">
         
@@ -337,7 +336,7 @@ export default function QuoteForm() {
                       <Check className="absolute w-4 h-4 text-[#6B5E51] opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-lg font-medium">Add Premium Package Upgrade</span>
+                      <span className="text-lg font-medium">Select Base Package</span>
                       <span className="text-sm opacity-60">+$650.00 Flat Fee</span>
                     </div>
                   </label>
@@ -625,7 +624,6 @@ export default function QuoteForm() {
           </div>
         </div>
       </div>
-
       {/* Logo at Bottom - Desktop Only */}
       <div className="hidden md:block mt-12 opacity-80 max-w-[200px]">
         <img src={logoImg} alt="grind theory logo" className="w-full h-auto" />
