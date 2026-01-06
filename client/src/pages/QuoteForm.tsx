@@ -14,7 +14,7 @@ export default function QuoteForm() {
   const [formData, setFormData] = useState({
     fullName: "",
     mobileNumber: "",
-    eventType: "Private Function",
+    eventType: "",
     hours: "",
     customHours: "",
     hasAddon: false,
@@ -479,16 +479,17 @@ export default function QuoteForm() {
                 <h1 className="text-3xl md:text-4xl font-bold">What type of event is it?</h1>
                 <div className="grid grid-cols-1 gap-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                   {Object.keys(settings?.eventSurplus || {}).map((type) => (
-                    <div
+                    <button
                       key={type}
+                      onClick={() => setFormData({ ...formData, eventType: type })}
                       className={`w-full py-3.5 rounded-xl md:rounded-2xl text-lg font-medium border transition-all text-center ${
                         formData.eventType === type 
                           ? "bg-white text-[#6B5E51] border-white shadow-lg" 
-                          : "bg-white/5 border-white/10"
+                          : "bg-white/5 border-white/10 hover:bg-white/10"
                       }`}
                     >
                       {type}
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
