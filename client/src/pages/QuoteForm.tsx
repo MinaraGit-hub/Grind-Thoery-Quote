@@ -25,20 +25,18 @@ export default function QuoteForm() {
   const createSubmission = useCreateSubmission();
   const { toast } = useToast();
 
-  const totalSteps = 4; 
+  const totalSteps = 5; 
   const displaySteps = 5; 
 
   const calculatedCost = useMemo(() => {
-    if (!settings || !formData.hours) return 0;
+    if (!settings) return 0;
     
     let baseCost = 0;
     if (formData.hours === "custom") {
       const h = parseInt(formData.customHours);
-      if (isNaN(h) || h < 5) return 0;
-      // 5 hours is $1450, then $200 for each hour above 5
-      baseCost = 1450 + (h - 5) * 200;
-    } else {
-      // Base cost from hours
+      if (isNaN(h) || h < 5) baseCost = 0;
+      else baseCost = 1450 + (h - 5) * 200;
+    } else if (formData.hours) {
       const specificRate = settings.hourlyRates[formData.hours as keyof typeof settings.hourlyRates];
       baseCost = specificRate || (settings.baseRate * (parseInt(formData.hours) || 0));
     }
@@ -47,7 +45,6 @@ export default function QuoteForm() {
     const surplusPercent = settings.eventSurplus?.[formData.eventType] ?? 0;
     let finalCost = Math.round(baseCost * (1 + surplusPercent / 100));
     
-    // Add $650 if add-on is selected
     if (formData.hasAddon) {
       finalCost += 650;
     }
@@ -79,6 +76,16 @@ export default function QuoteForm() {
         toast({
           title: "Invalid hours",
           description: "Please enter a valid number of hours.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    if (step === 4) {
+      if (!formData.eventType) {
+        toast({
+          title: "Selection required",
+          description: "Please select an event type.",
           variant: "destructive",
         });
         return;
@@ -211,7 +218,24 @@ export default function QuoteForm() {
                     <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Standard menu</li>
                     <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Setup + Packdown</li>
                   </ul>
-                  <p className="text-sm opacity-60 italic mt-4">Select your duration on the next screen to see pricing.</p>
+                </div>
+
+                <div className="mt-8">
+                  <label className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
+                    <div className="relative flex items-center justify-center">
+                      <input
+                        type="checkbox"
+                        className="peer appearance-none w-6 h-6 border-2 border-white/30 rounded-md checked:bg-white checked:border-white transition-all"
+                        checked={formData.hasAddon}
+                        onChange={(e) => setFormData({ ...formData, hasAddon: e.target.checked })}
+                      />
+                      <Check className="absolute w-4 h-4 text-[#6B5E51] opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-lg font-medium">Add Premium Package Upgrade</span>
+                      <span className="text-sm opacity-60">+$650.00 Flat Fee</span>
+                    </div>
+                  </label>
                 </div>
               </div>
             </FormStep>
@@ -264,28 +288,10 @@ export default function QuoteForm() {
                     <p className="text-sm opacity-60 mt-2 ml-2">Charged at $1,450 + $200 per extra hour</p>
                   </motion.div>
                 )}
-
-                <div className="mt-8">
-                  <label className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
-                    <div className="relative flex items-center justify-center">
-                      <input
-                        type="checkbox"
-                        className="peer appearance-none w-6 h-6 border-2 border-white/30 rounded-md checked:bg-white checked:border-white transition-all"
-                        checked={formData.hasAddon}
-                        onChange={(e) => setFormData({ ...formData, hasAddon: e.target.checked })}
-                      />
-                      <Check className="absolute w-4 h-4 text-[#6B5E51] opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-lg font-medium">Add Premium Package Upgrade</span>
-                      <span className="text-sm opacity-60">+$650.00 Flat Fee</span>
-                    </div>
-                  </label>
-                </div>
               </div>
             </FormStep>
 
-            <FormStep isActive={step === 3} direction={direction}>
+            <FormStep isActive={step === 4} direction={direction}>
               <div className="space-y-8">
                 <h1 className="text-3xl md:text-4xl font-bold">What type of event is it?</h1>
                 <div className="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
@@ -303,6 +309,13 @@ export default function QuoteForm() {
                     </button>
                   ))}
                 </div>
+              </div>
+            </FormStep>
+
+            <FormStep isActive={step === 5} direction={direction}>
+              <div className="space-y-8 text-center py-12">
+                <h1 className="text-4xl font-bold">Ready to submit?</h1>
+                <p className="text-xl opacity-80">Click the button below to receive your instant quote.</p>
               </div>
             </FormStep>
           </div>
