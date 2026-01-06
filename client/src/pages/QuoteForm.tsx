@@ -230,7 +230,6 @@ export default function QuoteForm() {
     <div className="min-h-screen bg-background flex flex-col items-center py-12 px-6 overflow-hidden">
       {/* Progress Bar */}
       <CircularProgress currentStep={step} totalSteps={displaySteps} className="mb-12" />
-
       {/* Main Card */}
       <div className="w-full max-w-5xl aspect-[16/10] bg-card rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-card-border/50">
         {/* Left Side: Image */}
@@ -515,7 +514,7 @@ export default function QuoteForm() {
                       <p className="text-sm opacity-60">Almond milks, Oat milk, Lactose-free milk</p>
                     </div>
                     <div className="flex items-center justify-between p-6 rounded-2xl bg-white/5 border border-white/10">
-                      <span className="text-lg font-medium">Extra Staff / Station</span>
+                      <span className="text-lg font-medium">Cost /2hrs</span>
                       <div className="flex items-center gap-6 bg-white/10 rounded-2xl py-3 px-6">
                         <button 
                           onClick={() => setFormData(prev => ({ ...prev, alternativeMilk: Math.max(0, prev.alternativeMilk - 1) }))}
@@ -580,7 +579,6 @@ export default function QuoteForm() {
           </div>
         </div>
       </div>
-
       {/* Logo at Bottom */}
       <div className="mt-12 opacity-80 max-w-[200px]">
         <img src={logoImg} alt="grind theory logo" className="w-full h-auto" />
