@@ -95,9 +95,16 @@ export default function QuoteForm() {
       finalCost += formData.bakedGoods.count * 7;
     }
 
-    // Add Alternative milk: $200 total for the event
+    // Add Alternative milk pricing
     if (!isNaN(hoursNum) && hoursNum >= 2 && formData.alternativeMilk > 0) {
-      finalCost += formData.alternativeMilk * 200;
+      let altMilkCost = 0;
+      if (hoursNum <= 2) altMilkCost = 200;
+      else if (hoursNum <= 4) altMilkCost = 400;
+      else if (hoursNum === 5) altMilkCost = 600;
+      else if (hoursNum === 6) altMilkCost = 800;
+      else altMilkCost = 800 + (hoursNum - 6) * 200;
+      
+      finalCost += formData.alternativeMilk * altMilkCost;
     }
     
     return finalCost;
@@ -574,7 +581,7 @@ export default function QuoteForm() {
                         </button>
                       </div>
                     </div>
-                    <p className="text-xs opacity-50 text-right">+$200.00 flat fee</p>
+                    <p className="text-xs opacity-50 text-right">Pricing based on event duration (+$200 per tier)</p>
                   </section>
                 </div>
               </div>
