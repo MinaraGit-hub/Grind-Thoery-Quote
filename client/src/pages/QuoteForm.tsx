@@ -265,7 +265,10 @@ export default function QuoteForm() {
 
             <FormStep isActive={step === 2} direction={direction}>
               <div className="space-y-8">
-                <h1 className="text-3xl md:text-4xl font-bold">Event Duration (Base Service Rate)</h1>
+                <div className="space-y-1">
+                  <h1 className="text-3xl md:text-4xl font-bold">Event Duration</h1>
+                  <p className="text-lg md:text-xl opacity-60 font-medium">Base Service Rate</p>
+                </div>
                 <div className="space-y-4 text-lg opacity-90">
                   <p className="font-semibold text-white">Base package includes:</p>
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
