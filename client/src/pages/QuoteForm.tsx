@@ -60,11 +60,16 @@ export default function QuoteForm() {
     
     if (formData.hours === "custom") {
       const h = parseInt(formData.customHours);
-      if (isNaN(h) || h < 5) baseCost = 0;
-      else baseCost = 1450 + (h - 5) * 200;
+      if (isNaN(h) || h < 6) baseCost = 0;
+      else baseCost = 1450 + (h - 6) * 200;
     } else if (formData.hours) {
-      const specificRate = settings.hourlyRates[formData.hours as keyof typeof settings.hourlyRates];
-      baseCost = specificRate || (settings.baseRate * (parseInt(formData.hours) || 0));
+      const hourlyOptions: Record<string, number> = {
+        "2": 200,
+        "3": 400,
+        "4": 600,
+        "5": 800
+      };
+      baseCost = hourlyOptions[formData.hours] || 0;
     }
     
     // Apply event surplus
@@ -157,10 +162,10 @@ export default function QuoteForm() {
         });
         return;
       }
-      if (formData.hours === "custom" && (!formData.customHours || parseInt(formData.customHours) < 1)) {
+      if (formData.hours === "custom" && (!formData.customHours || parseInt(formData.customHours) < 6)) {
         toast({
           title: "Invalid hours",
-          description: "Please enter a valid number of hours.",
+          description: "Please enter a minimum of 6 hours for custom duration.",
           variant: "destructive",
         });
         return;
@@ -387,17 +392,22 @@ export default function QuoteForm() {
               <div className="space-y-6 md:space-y-8">
                 <h1 className="text-3xl md:text-4xl font-bold">How many hours?</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                  {Object.keys(settings?.hourlyRates || {}).map((h) => (
+                  {[
+                    { val: "2", label: "2 Hours (+$200)" },
+                    { val: "3", label: "3 Hours (+$400)" },
+                    { val: "4", label: "4 Hours (+$600)" },
+                    { val: "5", label: "5 Hours (+$800)" }
+                  ].map((opt) => (
                     <button
-                      key={h}
-                      onClick={() => setFormData({ ...formData, hours: h })}
+                      key={opt.val}
+                      onClick={() => setFormData({ ...formData, hours: opt.val })}
                       className={`w-full py-4 rounded-xl md:rounded-2xl text-xl font-medium border transition-all ${
-                        formData.hours === h 
+                        formData.hours === opt.val 
                           ? "bg-white text-[#6B5E51] border-white shadow-lg" 
                           : "bg-white/5 border-white/10 hover:bg-white/10"
                       }`}
                     >
-                      {h} Hour{h !== "1" ? "s" : ""}
+                      {opt.label}
                     </button>
                   ))}
                   <button
@@ -408,7 +418,7 @@ export default function QuoteForm() {
                         : "bg-white/5 border-white/10 hover:bg-white/10"
                     }`}
                   >
-                    Custom (5+ Hours)
+                    Custom (6+ Hours)
                   </button>
                 </div>
                 {formData.hours === "custom" && (
@@ -419,7 +429,7 @@ export default function QuoteForm() {
                   >
                     <input
                       type="number"
-                      min="5"
+                      min="6"
                       placeholder="Enter number of hours"
                       className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
                       value={formData.customHours}
