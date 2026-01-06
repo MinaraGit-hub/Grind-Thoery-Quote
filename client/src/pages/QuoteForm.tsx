@@ -190,7 +190,7 @@ export default function QuoteForm() {
           </div>
 
           {/* Background Total Label */}
-          <div className="absolute bottom-8 right-8 opacity-10 text-6xl md:text-8xl font-bold pointer-events-none select-none">
+          <div className="absolute bottom-8 right-8 opacity-10 text-6xl md:text-8xl font-bold pointer-events-none select-none tracking-[0.2em]">
             Total: ${calculatedCost}
           </div>
         </div>

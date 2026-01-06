@@ -30,10 +30,21 @@
     font-family: 'Inter', sans-serif;
   }
   
-  h1, h2, h3, h4, h5, h6 {
+  h1 {
+    font-family: 'Mistically', cursive;
+    @apply font-bold tracking-tight;
+  }
+  h2, h3, h4, h5, h6 {
     font-family: 'Tobias', serif;
     @apply font-bold tracking-tight;
   }
+}
+
+@font-face {
+  font-family: 'Mistically';
+  src: url('https://fonts.cdnfonts.com/s/72124/Mistically-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
 }
 
 @font-face {
