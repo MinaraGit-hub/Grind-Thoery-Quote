@@ -1,61 +1,59 @@
 import { motion } from "framer-motion";
+import { Check } from "lucide-react";
 
-interface CircularProgressProps {
-  percentage: number;
-  size?: number;
-  strokeWidth?: number;
+interface StepProgressProps {
+  currentStep: number;
+  totalSteps: number;
   className?: string;
 }
 
 export function CircularProgress({
-  percentage,
-  size = 60,
-  strokeWidth = 4,
+  currentStep,
+  totalSteps = 4,
   className = "",
-}: CircularProgressProps) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
+}: StepProgressProps) {
   return (
-    <div className={`relative flex items-center justify-center ${className}`}>
-      <svg
-        width={size}
-        height={size}
-        viewBox={`0 0 ${size} ${size}`}
-        className="transform -rotate-90"
-      >
-        {/* Background circle */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          className="text-muted"
-        />
-        {/* Progress circle */}
-        <motion.circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          className="text-primary"
-          initial={{ strokeDashoffset: circumference }}
-          animate={{ strokeDashoffset }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          style={{
-            strokeDasharray: circumference,
-          }}
-        />
-      </svg>
-      <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-primary">
-        {Math.round(percentage)}%
-      </div>
+    <div className={`flex items-center justify-center gap-4 ${className}`}>
+      {Array.from({ length: totalSteps }).map((_, i) => {
+        const stepNumber = i + 1;
+        const isCompleted = currentStep > stepNumber;
+        const isActive = currentStep === stepNumber;
+
+        return (
+          <div key={i} className="flex items-center">
+            <div className="relative">
+              <motion.div
+                initial={false}
+                animate={{
+                  backgroundColor: isCompleted ? "rgb(var(--card))" : "transparent",
+                  borderColor: isCompleted || isActive ? "rgb(var(--card))" : "rgba(var(--card), 0.2)",
+                  color: isCompleted ? "white" : isActive ? "rgb(var(--card))" : "rgba(var(--card), 0.4)",
+                }}
+                className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-colors duration-300 ${
+                  isActive ? "border-brown-600 ring-4 ring-brown-600/10" : ""
+                }`}
+                style={{
+                   borderColor: "hsl(var(--primary))",
+                   backgroundColor: isCompleted ? "hsl(var(--primary))" : "transparent",
+                   color: isCompleted ? "white" : isActive ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"
+                }}
+              >
+                {isCompleted ? (
+                  <Check className="w-5 h-5" />
+                ) : (
+                  stepNumber
+                )}
+              </motion.div>
+            </div>
+            {i < totalSteps - 1 && (
+              <div 
+                className="w-12 h-[2px] mx-2"
+                style={{ backgroundColor: isCompleted ? "hsl(var(--primary))" : "hsl(var(--muted))" }}
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
