@@ -201,7 +201,7 @@ export default function QuoteForm() {
                     <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Cups, lids, napkins</li>
                     <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Premium beans</li>
                     <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> 2 staff (minimum)</li>
-                    <li className="flex items-center gap-2" colSpan={2}><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Standard menu (espresso, latte, etc.)</li>
+                    <li className="flex items-center gap-2" colSpan={2}><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Standard menu</li>
                     <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Setup + Packdown (included)</li>
                   </ul>
                   <p className="text-sm opacity-60 italic mt-4">Select your duration on the next screen to see pricing.</p>
