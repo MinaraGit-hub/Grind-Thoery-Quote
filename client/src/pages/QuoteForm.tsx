@@ -3,7 +3,7 @@ import { useSettings, useCreateSubmission } from "@/hooks/use-form-data";
 import { CircularProgress } from "@/components/CircularProgress";
 import { FormStep } from "@/components/FormStep";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logoImg from "@assets/Untitled-1_1767674078681.png";
 import stockImage from "@assets/stock_images/coffee_latte_art_top_1750a1c1.jpg";
@@ -208,7 +208,7 @@ export default function QuoteForm() {
                     <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Cups, lids, napkins</li>
                     <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Premium beans</li>
                     <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> 2 staff (minimum)</li>
-                    <li className="flex items-center gap-2" colSpan={2}><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Standard menu</li>
+                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Standard menu</li>
                     <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Setup + Packdown</li>
                   </ul>
                   <p className="text-sm opacity-60 italic mt-4">Select your duration on the next screen to see pricing.</p>
