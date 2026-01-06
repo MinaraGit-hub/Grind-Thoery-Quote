@@ -300,27 +300,32 @@ export default function QuoteForm() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center py-6 md:py-12 px-4 md:px-6 overflow-x-hidden">
+    <div className="min-h-screen bg-background flex flex-col items-center py-4 md:py-12 px-4 md:px-6 overflow-x-hidden">
+      {/* Mobile Logo */}
+      <div className="md:hidden w-full max-w-md mb-4">
+        <img src="/attached_assets/wht_1767715178549.png" alt="Grind Theory" className="h-8 mx-auto" />
+      </div>
+      
       {/* Progress Bar - Desktop Only */}
       <div className="hidden md:block w-full max-w-5xl mb-8">
         <CircularProgress currentStep={step} totalSteps={displaySteps} className="scale-100" />
       </div>
-      {/* Main Container: Full screen on mobile, limited on desktop */}
-      <div className="w-full max-w-5xl md:min-h-[600px] bg-card md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border-0 md:border border-card-border/50">
+      {/* Main Container */}
+      <div className="w-full max-w-5xl md:min-h-[600px] bg-card rounded-2xl md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-card-border/30 md:border-card-border/50">
         
         {/* Left Side: Image */}
         <div 
-          className="w-full md:w-5/12 bg-cover bg-center h-48 md:h-auto shrink-0"
+          className="w-full md:w-5/12 bg-cover bg-center h-40 md:h-auto shrink-0 rounded-t-2xl md:rounded-none"
           style={{ backgroundImage: `url(${stockImage})` }}
         />
 
         {/* Right Side: Form Content */}
-        <div className="w-full md:w-7/12 p-6 md:p-10 flex flex-col text-card-foreground relative min-h-[450px]">
+        <div className="w-full md:w-7/12 p-5 md:p-10 flex flex-col text-card-foreground relative min-h-[400px]">
           
           {/* Mobile Progress Indicator */}
-          <div className="md:hidden flex justify-between items-center mb-6">
+          <div className="md:hidden flex justify-between items-center mb-5">
             <span className="text-sm opacity-60 font-medium uppercase tracking-wider">Step {step} of {displaySteps}</span>
-            <div className="h-1 w-32 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-1 w-28 bg-white/10 rounded-full overflow-hidden">
               <div 
                 className="h-full bg-white transition-all duration-300" 
                 style={{ width: `${(step / displaySteps) * 100}%` }}
@@ -880,7 +885,7 @@ export default function QuoteForm() {
           </div>
 
           {/* Bottom Control Bar */}
-          <div className="mt-auto pt-8 space-y-6">
+          <div className="mt-auto pt-6 md:pt-8 space-y-4 md:space-y-6">
             {step > 1 && (
               <div className="flex justify-center">
                 <AnimatePresence mode="wait">
@@ -889,7 +894,7 @@ export default function QuoteForm() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="text-2xl font-bold text-white/90"
+                    className="text-xl md:text-2xl font-bold text-white/90"
                   >
                     Total: ${calculatedCost}
                   </motion.div>
@@ -897,19 +902,19 @@ export default function QuoteForm() {
               </div>
             )}
 
-            <div className="flex items-center gap-4 pb-8 md:pb-0">
+            <div className="flex items-center gap-3 md:gap-4 pb-1 md:pb-0">
               {step > 1 && (
                 <button 
                   onClick={handleBack} 
-                  className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors shrink-0"
+                  className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors shrink-0"
                 >
-                  <ArrowLeft className="w-6 h-6" />
+                  <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
               )}
               <button
                 onClick={step === totalSteps ? handleSubmit : handleNext}
                 disabled={(step === 2 && (!formData.hasAddon || !formData.guestCount)) || (step === 3 && !formData.hours) || (step === totalSteps && createSubmission.isPending)}
-                className={`flex-1 bg-white text-[#6B5E51] h-14 rounded-full text-xl font-bold hover:bg-opacity-90 transition-all active:scale-[0.98] ${
+                className={`flex-1 bg-white text-[#6B5E51] h-12 md:h-14 rounded-full text-lg md:text-xl font-bold hover:bg-opacity-90 transition-all active:scale-[0.98] ${
                   ((step === 2 && (!formData.hasAddon || !formData.guestCount)) || (step === 3 && !formData.hours)) ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
