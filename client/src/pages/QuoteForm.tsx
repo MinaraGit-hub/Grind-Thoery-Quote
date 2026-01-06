@@ -17,6 +17,7 @@ export default function QuoteForm() {
     eventType: "Private Function",
     hours: "",
     customHours: "",
+    hasAddon: false,
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -44,10 +45,15 @@ export default function QuoteForm() {
     
     // Apply event surplus
     const surplusPercent = settings.eventSurplus?.[formData.eventType] ?? 0;
-    const finalCost = Math.round(baseCost * (1 + surplusPercent / 100));
+    let finalCost = Math.round(baseCost * (1 + surplusPercent / 100));
+    
+    // Add $650 if add-on is selected
+    if (formData.hasAddon) {
+      finalCost += 650;
+    }
     
     return finalCost;
-  }, [settings, formData.hours, formData.customHours, formData.eventType]);
+  }, [settings, formData.hours, formData.customHours, formData.eventType, formData.hasAddon]);
 
   const handleNext = () => {
     if (step === 1) {
@@ -104,6 +110,7 @@ export default function QuoteForm() {
         mobileNumber: formData.mobileNumber,
         eventType: formData.eventType,
         hours: finalHours,
+        hasAddon: formData.hasAddon,
         calculatedCost: calculatedCost,
       });
       setIsSubmitted(true);
@@ -257,6 +264,24 @@ export default function QuoteForm() {
                     <p className="text-sm opacity-60 mt-2 ml-2">Charged at $1,450 + $200 per extra hour</p>
                   </motion.div>
                 )}
+
+                <div className="mt-8">
+                  <label className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
+                    <div className="relative flex items-center justify-center">
+                      <input
+                        type="checkbox"
+                        className="peer appearance-none w-6 h-6 border-2 border-white/30 rounded-md checked:bg-white checked:border-white transition-all"
+                        checked={formData.hasAddon}
+                        onChange={(e) => setFormData({ ...formData, hasAddon: e.target.checked })}
+                      />
+                      <Check className="absolute w-4 h-4 text-[#6B5E51] opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-lg font-medium">Add Premium Package Upgrade</span>
+                      <span className="text-sm opacity-60">+$650.00 Flat Fee</span>
+                    </div>
+                  </label>
+                </div>
               </div>
             </FormStep>
 

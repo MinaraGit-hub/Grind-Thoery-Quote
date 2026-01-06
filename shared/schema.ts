@@ -31,6 +31,7 @@ export const submissions = pgTable("submissions", {
   mobileNumber: text("mobile_number").notNull(),
   eventType: text("event_type").notNull().default("Private Function"),
   hours: integer("hours").notNull(),
+  hasAddon: boolean("has_addon").notNull().default(false),
   calculatedCost: integer("calculated_cost").notNull(),
   status: text("status").notNull().default("new"),
   createdAt: timestamp("created_at").defaultNow(),
