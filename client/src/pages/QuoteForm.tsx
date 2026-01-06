@@ -174,8 +174,23 @@ export default function QuoteForm() {
             </FormStep>
           </div>
 
+          {/* Dynamic Total Display above OK button */}
+          <div className="mt-4 mb-2 flex justify-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={calculatedCost}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="text-2xl font-bold text-white/90"
+              >
+                Total: ${calculatedCost}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
           {/* Navigation */}
-          <div className="mt-8 flex items-center gap-4">
+          <div className="mt-2 flex items-center gap-4">
             {step > 1 && (
               <button onClick={handleBack} className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors">
                 <ArrowLeft className="w-6 h-6" />
