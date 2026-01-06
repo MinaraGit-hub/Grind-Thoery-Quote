@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logoImg from "@assets/Untitled-1_1767674078681.png";
+import stockImage from "@assets/stock_images/coffee_latte_art_top_1750a1c1.jpg";
 
 export default function QuoteForm() {
   const [step, setStep] = useState(1);
