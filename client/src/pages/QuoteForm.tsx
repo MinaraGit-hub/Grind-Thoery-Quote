@@ -534,7 +534,7 @@ export default function QuoteForm() {
                   </section>
 
                   <section className="space-y-3">
-                    <p className="text-lg font-semibold opacity-70">Machine Canned Beverages</p>
+                    <p className="text-lg font-semibold opacity-70">Machine Canned Beverages Upgrade:</p>
                     <div className="relative">
                       <select 
                         className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30"
