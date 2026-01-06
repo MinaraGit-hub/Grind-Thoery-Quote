@@ -37,6 +37,23 @@ export const submissions = pgTable("submissions", {
   cannedBeverages: text("canned_beverages").notNull().default("none"),
   bakedGoods: jsonb("baked_goods").$type<{ count: number; useBulk: boolean }>().notNull().default({ count: 0, useBulk: false }),
   alternativeMilk: integer("alternative_milk").notNull().default(0),
+  branding: jsonb("branding").$type<{ 
+    cupCustomization: string; 
+    stickerCups: number; 
+    stickerPrice: number;
+    sleeveCups: number;
+    sleevePrice: number;
+    cartBranding: string;
+    cartPrice: number;
+  }>().notNull().default({
+    cupCustomization: "none",
+    stickerCups: 1000,
+    stickerPrice: 0,
+    sleeveCups: 1000,
+    sleevePrice: 0,
+    cartBranding: "none",
+    cartPrice: 0
+  }),
   guestCount: text("guest_count").notNull().default("1–30"),
   calculatedCost: integer("calculated_cost").notNull(),
   status: text("status").notNull().default("new"),

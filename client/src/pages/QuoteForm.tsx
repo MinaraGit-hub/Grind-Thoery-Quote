@@ -32,6 +32,12 @@ export default function QuoteForm() {
     cannedBeverages: "none",
     bakedGoods: { count: 0, useBulk: false },
     alternativeMilk: 0,
+    branding: {
+      cupCustomization: "none",
+      stickerCups: 1000,
+      sleeveCups: 1000,
+      cartBranding: "none"
+    },
     guestCount: "1–30",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
