@@ -307,7 +307,6 @@ export default function QuoteForm() {
       <div className="md:hidden w-full mb-4 px-2">
         <img src={Untitled_1} alt="Grind Theory" className="h-10 mx-auto" />
       </div>
-      
       {/* Progress Bar - Desktop Only */}
       <div className="hidden md:block w-full max-w-5xl mb-8">
         <CircularProgress currentStep={step} totalSteps={displaySteps} className="scale-100" />
@@ -515,7 +514,7 @@ export default function QuoteForm() {
                     
                     return (
                       <div key={drink} className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
-                        <span className="text-lg flex-1 mr-4">{drink}</span>
+                        <span className="flex-1 mr-4 text-[14px]">{drink}</span>
                         <div className="flex items-center gap-4 bg-white/10 rounded-xl px-2 py-1">
                           <button 
                             onClick={() => updateDrinkQuantity('signature', drink, -1)}
