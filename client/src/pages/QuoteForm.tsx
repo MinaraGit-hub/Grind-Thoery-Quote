@@ -345,6 +345,22 @@ export default function QuoteForm() {
                 </div>
 
                 <div className="mt-8 space-y-6">
+                  <label className="flex items-center gap-3 p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
+                    <div className="relative flex items-center justify-center">
+                      <input
+                        type="checkbox"
+                        className="peer appearance-none w-6 h-6 border-2 border-white/30 rounded-md checked:bg-white checked:border-white transition-all"
+                        checked={formData.hasAddon}
+                        onChange={(e) => setFormData({ ...formData, hasAddon: e.target.checked })}
+                      />
+                      <Check className="absolute w-4 h-4 text-[#6B5E51] opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-lg font-medium">Select Base Package</span>
+                      <span className="text-sm opacity-60">+$650.00 Flat Fee</span>
+                    </div>
+                  </label>
+
                   <div className="space-y-3">
                     <p className="text-lg font-semibold opacity-70">Guest Count Modifier</p>
                     <div className="relative">
@@ -363,22 +379,6 @@ export default function QuoteForm() {
                       <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
                     </div>
                   </div>
-
-                  <label className="flex items-center gap-3 p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
-                    <div className="relative flex items-center justify-center">
-                      <input
-                        type="checkbox"
-                        className="peer appearance-none w-6 h-6 border-2 border-white/30 rounded-md checked:bg-white checked:border-white transition-all"
-                        checked={formData.hasAddon}
-                        onChange={(e) => setFormData({ ...formData, hasAddon: e.target.checked })}
-                      />
-                      <Check className="absolute w-4 h-4 text-[#6B5E51] opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-lg font-medium">Select Base Package</span>
-                      <span className="text-sm opacity-60">+$650.00 Flat Fee</span>
-                    </div>
-                  </label>
                 </div>
               </div>
             </FormStep>
