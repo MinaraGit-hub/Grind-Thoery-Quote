@@ -29,9 +29,7 @@ export function CircularProgress({
                   borderColor: isCompleted || isActive ? "rgb(var(--card))" : "rgba(var(--card), 0.2)",
                   color: isCompleted ? "white" : isActive ? "rgb(var(--card))" : "rgba(var(--card), 0.4)",
                 }}
-                className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-colors duration-300 ${
-                  isActive ? "border-brown-600 ring-4 ring-brown-600/10" : ""
-                }`}
+                className="w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-colors duration-300 bg-[#6f6052] text-[#eae0d7]"
                 style={{
                    borderColor: "hsl(var(--primary))",
                    backgroundColor: isCompleted ? "hsl(var(--primary))" : "transparent",
