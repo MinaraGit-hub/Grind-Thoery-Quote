@@ -32,6 +32,7 @@ export const submissions = pgTable("submissions", {
   eventType: text("event_type").notNull().default("Private Function"),
   hours: integer("hours").notNull(),
   hasAddon: boolean("has_addon").notNull().default(false),
+  signatureDrinks: jsonb("signature_drinks").$type<Record<string, number>>().notNull().default({}),
   calculatedCost: integer("calculated_cost").notNull(),
   status: text("status").notNull().default("new"),
   createdAt: timestamp("created_at").defaultNow(),

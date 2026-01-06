@@ -3,7 +3,7 @@ import { useSettings, useCreateSubmission } from "@/hooks/use-form-data";
 import { CircularProgress } from "@/components/CircularProgress";
 import { FormStep } from "@/components/FormStep";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2, Check } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2, Check, Plus, Minus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logoImg from "@assets/Untitled-1_1767674078681.png";
 import stockImage from "@assets/stock_images/coffee_latte_art_top_1750a1c1.jpg";
@@ -18,6 +18,13 @@ export default function QuoteForm() {
     hours: "",
     customHours: "",
     hasAddon: false,
+    signatureDrinks: {
+      "Tiramisu iced latte": 0,
+      "Banana cheesecake cold foam latte": 0,
+      "Biscoff cold foam latte": 0,
+      "Iced dirty matcha": 0,
+      "Cold brew / cold brew concentrate": 0
+    } as Record<string, number>
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -25,8 +32,8 @@ export default function QuoteForm() {
   const createSubmission = useCreateSubmission();
   const { toast } = useToast();
 
-  const totalSteps = 5; 
-  const displaySteps = 5; 
+  const totalSteps = 6; 
+  const displaySteps = 6; 
 
   const calculatedCost = useMemo(() => {
     if (!settings) return 0;
@@ -48,9 +55,13 @@ export default function QuoteForm() {
     if (formData.hasAddon) {
       finalCost += 650;
     }
+
+    // Add signature drinks cost: $10 per additional drink
+    const totalDrinks = Object.values(formData.signatureDrinks).reduce((a, b) => a + b, 0);
+    finalCost += totalDrinks * 10;
     
     return finalCost;
-  }, [settings, formData.hours, formData.customHours, formData.eventType, formData.hasAddon]);
+  }, [settings, formData.hours, formData.customHours, formData.eventType, formData.hasAddon, formData.signatureDrinks]);
 
   const handleNext = () => {
     if (step === 1) {
@@ -100,16 +111,17 @@ export default function QuoteForm() {
     setStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = async () => {
-    if (!formData.eventType) {
-      toast({
-        title: "Selection required",
-        description: "Please select an event type.",
-        variant: "destructive",
-      });
-      return;
-    }
+  const updateDrinkQuantity = (drink: string, delta: number) => {
+    setFormData(prev => ({
+      ...prev,
+      signatureDrinks: {
+        ...prev.signatureDrinks,
+        [drink]: Math.max(0, (prev.signatureDrinks[drink] || 0) + delta)
+      }
+    }));
+  };
 
+  const handleSubmit = async () => {
     try {
       const finalHours = formData.hours === "custom" ? parseInt(formData.customHours) : parseInt(formData.hours);
       await createSubmission.mutateAsync({
@@ -118,6 +130,7 @@ export default function QuoteForm() {
         eventType: formData.eventType,
         hours: finalHours,
         hasAddon: formData.hasAddon,
+        signatureDrinks: formData.signatureDrinks,
         calculatedCost: calculatedCost,
       });
       setIsSubmitted(true);
@@ -313,6 +326,39 @@ export default function QuoteForm() {
             </FormStep>
 
             <FormStep isActive={step === 5} direction={direction}>
+              <div className="space-y-6">
+                <h1 className="text-3xl md:text-4xl font-bold">Signature Drinks</h1>
+                <div className="space-y-3 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar">
+                  {Object.keys(formData.signatureDrinks).map((drink) => {
+                    if (drink === "Iced dirty matcha" && formData.eventType !== "Matcha") return null; 
+                    
+                    return (
+                      <div key={drink} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10">
+                        <span className="text-lg flex-1 mr-4">{drink}</span>
+                        <div className="flex items-center gap-4 bg-white/10 rounded-xl px-2 py-1">
+                          <button 
+                            onClick={() => updateDrinkQuantity(drink, -1)}
+                            className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                          >
+                            <Minus className="w-5 h-5" />
+                          </button>
+                          <span className="text-xl font-bold w-6 text-center">{formData.signatureDrinks[drink]}</span>
+                          <button 
+                            onClick={() => updateDrinkQuantity(drink, 1)}
+                            className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                          >
+                            <Plus className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <p className="text-sm opacity-60 text-center mt-4">Each signature drink adds $10.00 to the quote</p>
+                </div>
+              </div>
+            </FormStep>
+
+            <FormStep isActive={step === 6} direction={direction}>
               <div className="space-y-8 text-center py-12">
                 <h1 className="text-4xl font-bold">Ready to submit?</h1>
                 <p className="text-xl opacity-80">Click the button below to receive your instant quote.</p>
