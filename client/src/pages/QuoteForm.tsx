@@ -33,8 +33,9 @@ export default function QuoteForm() {
     let baseCost = 0;
     if (formData.hours === "custom") {
       const h = parseInt(formData.customHours);
-      if (isNaN(h) || h < 0) return 0;
-      baseCost = h * 200;
+      if (isNaN(h) || h < 5) return 0;
+      // 5 hours is $1450, then $200 for each hour above 5
+      baseCost = 1450 + (h - 5) * 200;
     } else {
       // Base cost from hours
       const specificRate = settings.hourlyRates[formData.hours as keyof typeof settings.hourlyRates];
@@ -227,12 +228,13 @@ export default function QuoteForm() {
                       min="5"
                       placeholder="Enter number of hours"
                       className="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+                      value={formData.customHours}
                       onChange={(e) => {
                         const val = e.target.value;
                         setFormData(prev => ({ ...prev, customHours: val }));
                       }}
                     />
-                    <p className="text-sm opacity-60 mt-2 ml-2">Charged at $200 per hour</p>
+                    <p className="text-sm opacity-60 mt-2 ml-2">Charged at $1,450 + $200 per extra hour</p>
                   </motion.div>
                 )}
               </div>
