@@ -170,7 +170,7 @@ export default function QuoteForm() {
       if (!formData.mobileNumber) {
         newErrors.mobileNumber = "Mobile Number is required";
       } else if (!phoneRegex.test(formData.mobileNumber.replace(/\s/g, ""))) {
-        newErrors.mobileNumber = "Please enter a valid Australian mobile number (e.g. 0412 345 678)";
+        newErrors.mobileNumber = "Please enter a valid mobile number (e.g. 0412 345 678)";
       }
     }
     
