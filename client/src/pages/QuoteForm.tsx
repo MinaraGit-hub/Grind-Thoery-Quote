@@ -744,13 +744,13 @@ export default function QuoteForm() {
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 space-y-4"
+                        className="p-4 md:p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 space-y-3 md:space-y-4"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-lg font-medium">Number of Cups</span>
-                          <span className="text-sm opacity-60">Base 1000 cups</span>
+                          <span className="text-base md:text-lg font-medium">Number of Cups</span>
+                          <span className="text-xs md:text-sm opacity-60">Base 1000 cups</span>
                         </div>
-                        <div className="flex items-center justify-center gap-6 bg-white/10 rounded-xl md:rounded-2xl py-3 px-6">
+                        <div className="flex items-center justify-center gap-4 md:gap-6 bg-white/10 rounded-lg md:rounded-2xl py-2 md:py-3 px-4 md:px-6">
                           <button 
                             onClick={() => {
                               const field = formData.branding.cupCustomization === "stickers" ? "stickerCups" : "sleeveCups";
@@ -762,15 +762,15 @@ export default function QuoteForm() {
                                 }
                               }));
                             }}
-                            className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                            className="p-1.5 md:p-2 hover:bg-white/20 rounded-lg md:rounded-xl transition-colors"
                           >
-                            <Minus className="w-6 h-6" />
+                            <Minus className="w-5 h-5 md:w-6 md:h-6" />
                           </button>
                           <input
                             type="number"
                             min="1000"
                             step="200"
-                            className="bg-transparent text-3xl font-bold w-24 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="bg-transparent text-2xl md:text-3xl font-bold w-20 md:w-24 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             value={formData.branding.cupCustomization === "stickers" ? formData.branding.stickerCups : formData.branding.sleeveCups}
                             onChange={(e) => {
                               const val = Math.max(1000, parseInt(e.target.value) || 1000);
@@ -792,9 +792,9 @@ export default function QuoteForm() {
                                 }
                               }));
                             }}
-                            className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                            className="p-1.5 md:p-2 hover:bg-white/20 rounded-lg md:rounded-xl transition-colors"
                           >
-                            <Plus className="w-6 h-6" />
+                            <Plus className="w-5 h-5 md:w-6 md:h-6" />
                           </button>
                         </div>
                         <p className="text-xs opacity-50 text-center">
