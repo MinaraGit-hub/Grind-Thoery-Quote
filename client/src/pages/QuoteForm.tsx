@@ -16,6 +16,7 @@ export default function QuoteForm() {
     mobileNumber: "",
     eventType: "Private Function",
     hours: "",
+    customHours: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -29,16 +30,23 @@ export default function QuoteForm() {
   const calculatedCost = useMemo(() => {
     if (!settings || !formData.hours) return 0;
     
-    // Base cost from hours
-    const specificRate = settings.hourlyRates[formData.hours as keyof typeof settings.hourlyRates];
-    const baseCost = specificRate || (settings.baseRate * parseInt(formData.hours));
+    let baseCost = 0;
+    if (formData.hours === "custom") {
+      const h = parseInt(formData.customHours);
+      if (isNaN(h)) return 0;
+      baseCost = h * 200;
+    } else {
+      // Base cost from hours
+      const specificRate = settings.hourlyRates[formData.hours as keyof typeof settings.hourlyRates];
+      baseCost = specificRate || (settings.baseRate * parseInt(formData.hours));
+    }
     
     // Apply event surplus
     const surplusPercent = settings.eventSurplus?.[formData.eventType] ?? 0;
     const finalCost = Math.round(baseCost * (1 + surplusPercent / 100));
     
     return finalCost;
-  }, [settings, formData.hours, formData.eventType]);
+  }, [settings, formData.hours, formData.customHours, formData.eventType]);
 
   const handleNext = () => {
     if (step === 1) {
@@ -56,6 +64,14 @@ export default function QuoteForm() {
         toast({
           title: "Selection required",
           description: "Please select the number of hours.",
+          variant: "destructive",
+        });
+        return;
+      }
+      if (formData.hours === "custom" && (!formData.customHours || parseInt(formData.customHours) < 1)) {
+        toast({
+          title: "Invalid hours",
+          description: "Please enter a valid number of hours.",
           variant: "destructive",
         });
         return;
@@ -81,11 +97,12 @@ export default function QuoteForm() {
     }
 
     try {
+      const finalHours = formData.hours === "custom" ? parseInt(formData.customHours) : parseInt(formData.hours);
       await createSubmission.mutateAsync({
         fullName: formData.fullName,
         mobileNumber: formData.mobileNumber,
         eventType: formData.eventType,
-        hours: parseInt(formData.hours),
+        hours: finalHours,
         calculatedCost: calculatedCost,
       });
       setIsSubmitted(true);
@@ -188,7 +205,36 @@ export default function QuoteForm() {
                       {h} Hour{h !== "1" ? "s" : ""}
                     </button>
                   ))}
+                  <button
+                    onClick={() => setFormData({ ...formData, hours: "custom" })}
+                    className={`w-full py-4 rounded-2xl text-xl font-medium border transition-all ${
+                      formData.hours === "custom" 
+                        ? "bg-white text-card border-white shadow-lg" 
+                        : "bg-white/5 border-white/10 hover:bg-white/10"
+                    }`}
+                  >
+                    Custom (5+ Hours)
+                  </button>
                 </div>
+                {formData.hours === "custom" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="mt-4"
+                  >
+                    <input
+                      type="number"
+                      min="5"
+                      placeholder="Enter number of hours"
+                      className="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setFormData(prev => ({ ...prev, customHours: val }));
+                      }}
+                    />
+                    <p className="text-sm opacity-60 mt-2 ml-2">Charged at $200 per hour</p>
+                  </motion.div>
+                )}
               </div>
             </FormStep>
 
