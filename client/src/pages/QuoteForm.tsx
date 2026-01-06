@@ -24,8 +24,8 @@ export default function QuoteForm() {
   const createSubmission = useCreateSubmission();
   const { toast } = useToast();
 
-  const totalSteps = 3; 
-  const displaySteps = 4; 
+  const totalSteps = 4; 
+  const displaySteps = 5; 
 
   const calculatedCost = useMemo(() => {
     if (!settings || !formData.hours) return 0;
@@ -60,7 +60,7 @@ export default function QuoteForm() {
         return;
       }
     }
-    if (step === 2) {
+    if (step === 3) {
       if (!formData.hours) {
         toast({
           title: "Selection required",
@@ -190,6 +190,26 @@ export default function QuoteForm() {
             </FormStep>
 
             <FormStep isActive={step === 2} direction={direction}>
+              <div className="space-y-8">
+                <h1 className="text-3xl md:text-4xl font-bold">Event Duration (Base Service Rate)</h1>
+                <div className="space-y-4 text-lg opacity-90">
+                  <p className="font-semibold text-white">Base package includes:</p>
+                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Espresso machine</li>
+                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Grinder</li>
+                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Water system</li>
+                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Cups, lids, napkins</li>
+                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Premium beans</li>
+                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> 2 staff (minimum)</li>
+                    <li className="flex items-center gap-2" colSpan={2}><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Standard menu (espresso, latte, etc.)</li>
+                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Setup + Packdown (included)</li>
+                  </ul>
+                  <p className="text-sm opacity-60 italic mt-4">Select your duration on the next screen to see pricing.</p>
+                </div>
+              </div>
+            </FormStep>
+
+            <FormStep isActive={step === 3} direction={direction}>
               <div className="space-y-8">
                 <h1 className="text-3xl md:text-4xl font-bold">How many hours?</h1>
                 <div className="grid grid-cols-2 gap-4">
