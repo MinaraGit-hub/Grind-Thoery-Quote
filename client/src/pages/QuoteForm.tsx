@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useSettings, useCreateSubmission } from "@/hooks/use-form-data";
 import { CircularProgress } from "@/components/CircularProgress";
 import { FormStep } from "@/components/FormStep";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
