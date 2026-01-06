@@ -455,17 +455,16 @@ export default function QuoteForm() {
                 <h1 className="text-3xl md:text-4xl font-bold">What type of event is it?</h1>
                 <div className="grid grid-cols-1 gap-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                   {Object.keys(settings?.eventSurplus || {}).map((type) => (
-                    <button
+                    <div
                       key={type}
-                      onClick={() => setFormData({ ...formData, eventType: type })}
-                      className={`w-full py-3.5 rounded-xl md:rounded-2xl text-lg font-medium border transition-all ${
+                      className={`w-full py-3.5 rounded-xl md:rounded-2xl text-lg font-medium border transition-all text-center ${
                         formData.eventType === type 
                           ? "bg-white text-[#6B5E51] border-white shadow-lg" 
-                          : "bg-white/5 border-white/10 hover:bg-white/10"
+                          : "bg-white/5 border-white/10"
                       }`}
                     >
                       {type}
-                    </button>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -488,7 +487,19 @@ export default function QuoteForm() {
                           >
                             <Minus className="w-5 h-5" />
                           </button>
-                          <span className="text-xl font-bold w-6 text-center">{formData.signatureDrinks[drink]}</span>
+                          <input
+                            type="number"
+                            min="0"
+                            className="bg-transparent text-xl font-bold w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            value={formData.signatureDrinks[drink]}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value) || 0;
+                              setFormData(prev => ({
+                                ...prev,
+                                signatureDrinks: { ...prev.signatureDrinks, [drink]: Math.max(0, val) }
+                              }));
+                            }}
+                          />
                           <button 
                             onClick={() => updateDrinkQuantity('signature', drink, 1)}
                             className="p-1 hover:bg-white/20 rounded-lg transition-colors"
@@ -520,7 +531,19 @@ export default function QuoteForm() {
                           >
                             <Minus className="w-5 h-5" />
                           </button>
-                          <span className="text-xl font-bold w-6 text-center">{formData.matchaUpgrade[drink]}</span>
+                          <input
+                            type="number"
+                            min="0"
+                            className="bg-transparent text-xl font-bold w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            value={formData.matchaUpgrade[drink]}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value) || 0;
+                              setFormData(prev => ({
+                                ...prev,
+                                matchaUpgrade: { ...prev.matchaUpgrade, [drink]: Math.max(0, val) }
+                              }));
+                            }}
+                          />
                           <button 
                             onClick={() => updateDrinkQuantity('matcha', drink, 1)}
                             className="p-1 hover:bg-white/20 rounded-lg transition-colors"
@@ -571,7 +594,19 @@ export default function QuoteForm() {
                         >
                           <Minus className="w-6 h-6" />
                         </button>
-                        <span className="text-3xl font-bold w-12 text-center">{formData.bakedGoods.useBulk ? 0 : formData.bakedGoods.count}</span>
+                          <input
+                            type="number"
+                            min="0"
+                            className="bg-transparent text-xl font-bold w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            value={formData.bakedGoods.useBulk ? 0 : formData.bakedGoods.count}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value) || 0;
+                              setFormData(prev => ({
+                                ...prev,
+                                bakedGoods: { ...prev.bakedGoods, count: Math.max(0, val), useBulk: false }
+                              }));
+                            }}
+                          />
                         <button 
                           onClick={() => setFormData(prev => ({ ...prev, bakedGoods: { ...prev.bakedGoods, count: prev.bakedGoods.count + 1, useBulk: false } }))}
                           className="p-2 hover:bg-white/20 rounded-xl transition-colors"
@@ -621,7 +656,19 @@ export default function QuoteForm() {
                         >
                           <Minus className="w-6 h-6" />
                         </button>
-                        <span className="text-3xl font-bold w-12 text-center">{formData.alternativeMilk}</span>
+                        <input
+                          type="number"
+                          min="0"
+                          className="bg-transparent text-xl font-bold w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          value={formData.alternativeMilk}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 0;
+                            setFormData(prev => ({
+                              ...prev,
+                              alternativeMilk: Math.max(0, val)
+                            }));
+                          }}
+                        />
                         <button 
                           onClick={() => setFormData(prev => ({ ...prev, alternativeMilk: prev.alternativeMilk + 1 }))}
                           className="p-2 hover:bg-white/20 rounded-xl transition-colors"
@@ -671,9 +718,9 @@ export default function QuoteForm() {
               )}
               <button
                 onClick={step === totalSteps ? handleSubmit : handleNext}
-                disabled={(step === 3 && !formData.hours) || (step === totalSteps && createSubmission.isPending)}
+                disabled={(step === 2 && (!formData.hasAddon || !formData.guestCount)) || (step === 3 && !formData.hours) || (step === totalSteps && createSubmission.isPending)}
                 className={`flex-1 bg-white text-[#6B5E51] h-14 rounded-full text-xl font-bold hover:bg-opacity-90 transition-all active:scale-[0.98] ${
-                  (step === 3 && !formData.hours) ? "opacity-50 cursor-not-allowed" : ""
+                  ((step === 2 && (!formData.hasAddon || !formData.guestCount)) || (step === 3 && !formData.hours)) ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
                 {step === totalSteps ? "OK" : "Next"}
