@@ -61,7 +61,7 @@ export default function QuoteForm() {
     if (formData.hours === "custom") {
       const h = parseInt(formData.customHours);
       if (isNaN(h) || h < 6) baseCost = 0;
-      else baseCost = 1450 + (h - 6) * 200;
+      else baseCost = 800 + (h - 5) * 200;
     } else if (formData.hours) {
       const hourlyOptions: Record<string, number> = {
         "2": 200,
@@ -438,7 +438,7 @@ export default function QuoteForm() {
                         setFormData(prev => ({ ...prev, customHours: val }));
                       }}
                     />
-                    <p className="text-sm opacity-60 mt-2 ml-2">Charged at $1,450 + $200 per extra hour</p>
+                    <p className="text-sm opacity-60 mt-2 ml-2">Charged at $800 + $200 per extra hour</p>
                   </motion.div>
                 )}
               </div>
