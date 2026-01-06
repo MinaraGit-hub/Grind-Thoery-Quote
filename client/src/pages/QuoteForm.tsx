@@ -227,35 +227,51 @@ export default function QuoteForm() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center py-12 px-6 overflow-hidden">
-      {/* Progress Bar */}
-      <CircularProgress currentStep={step} totalSteps={displaySteps} className="mb-12" />
-      {/* Main Card */}
-      <div className="w-full max-w-5xl aspect-[16/10] bg-card rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-card-border/50">
+    <div className="min-h-screen bg-background flex flex-col items-center py-0 md:py-12 px-0 md:px-6 overflow-x-hidden">
+      {/* Progress Bar - Desktop Only */}
+      <div className="hidden md:block w-full max-w-5xl mb-12">
+        <CircularProgress currentStep={step} totalSteps={displaySteps} className="scale-100" />
+      </div>
+
+      {/* Main Container: Full screen on mobile, limited on desktop */}
+      <div className="w-full max-w-5xl md:aspect-[16/10] bg-card md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border-0 md:border border-card-border/50 min-h-screen md:min-h-0">
+        
         {/* Left Side: Image */}
         <div 
-          className="w-full md:w-1/2 bg-cover bg-[center_top] h-48 md:h-auto"
+          className="w-full md:w-1/2 bg-cover bg-[center_top] h-48 md:h-auto shrink-0"
           style={{ backgroundImage: `url(${stockImage})` }}
         />
 
-        {/* Right Side: Form */}
-        <div className="w-full md:w-1/2 p-12 flex flex-col text-card-foreground relative">
-          <div className="flex-1 flex flex-col justify-center">
+        {/* Right Side: Form Content */}
+        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col text-card-foreground relative flex-1">
+          
+          {/* Mobile Progress Indicator */}
+          <div className="md:hidden flex justify-between items-center mb-6">
+            <span className="text-sm opacity-60 font-medium uppercase tracking-wider">Step {step} of {displaySteps}</span>
+            <div className="h-1 w-32 bg-white/10 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-white transition-all duration-300" 
+                style={{ width: `${(step / displaySteps) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center min-h-0">
             <FormStep isActive={step === 1} direction={direction}>
-              <div className="space-y-8">
-                <h1 className="text-3xl md:text-4xl font-bold">Personal Information:</h1>
-                <div className="space-y-6">
+              <div className="space-y-6 md:space-y-8">
+                <h1 className="text-3xl md:text-4xl font-bold">Personal Information</h1>
+                <div className="space-y-4 md:space-y-6">
                   <input
                     type="text"
                     placeholder="Full Name"
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   />
                   <input
                     type="tel"
                     placeholder="Mobile Number"
-                    className="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
                     value={formData.mobileNumber}
                     onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })}
                   />
@@ -264,7 +280,7 @@ export default function QuoteForm() {
             </FormStep>
 
             <FormStep isActive={step === 2} direction={direction}>
-              <div className="space-y-8">
+              <div className="space-y-6 md:space-y-8">
                 <div className="space-y-1">
                   <h1 className="text-3xl md:text-4xl font-bold">Event Duration</h1>
                   <p className="text-lg md:text-xl opacity-60 font-medium">Base Service Rate</p>
@@ -272,19 +288,19 @@ export default function QuoteForm() {
                 <div className="space-y-4 text-lg opacity-90">
                   <p className="font-semibold text-white">Base package includes:</p>
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
-                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Espresso machine</li>
-                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Grinder</li>
-                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Water system</li>
-                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Cups, lids, napkins</li>
-                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Premium beans</li>
-                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> 2 staff (minimum)</li>
-                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Standard menu</li>
-                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Setup + Packdown</li>
+                    <li className="flex items-center gap-2 text-base md:text-lg"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Espresso machine</li>
+                    <li className="flex items-center gap-2 text-base md:text-lg"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Grinder</li>
+                    <li className="flex items-center gap-2 text-base md:text-lg"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Water system</li>
+                    <li className="flex items-center gap-2 text-base md:text-lg"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Cups, lids, napkins</li>
+                    <li className="flex items-center gap-2 text-base md:text-lg"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Premium beans</li>
+                    <li className="flex items-center gap-2 text-base md:text-lg"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> 2 staff (minimum)</li>
+                    <li className="flex items-center gap-2 text-base md:text-lg"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Standard menu</li>
+                    <li className="flex items-center gap-2 text-base md:text-lg"><div className="w-1.5 h-1.5 rounded-full bg-white/60" /> Setup + Packdown</li>
                   </ul>
                 </div>
 
                 <div className="mt-8">
-                  <label className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
+                  <label className="flex items-center gap-3 p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
                     <div className="relative flex items-center justify-center">
                       <input
                         type="checkbox"
@@ -304,14 +320,14 @@ export default function QuoteForm() {
             </FormStep>
 
             <FormStep isActive={step === 3} direction={direction}>
-              <div className="space-y-8">
+              <div className="space-y-6 md:space-y-8">
                 <h1 className="text-3xl md:text-4xl font-bold">How many hours?</h1>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   {Object.keys(settings?.hourlyRates || {}).map((h) => (
                     <button
                       key={h}
                       onClick={() => setFormData({ ...formData, hours: h })}
-                      className={`w-full py-4 rounded-2xl text-xl font-medium border transition-all ${
+                      className={`w-full py-4 rounded-xl md:rounded-2xl text-xl font-medium border transition-all ${
                         formData.hours === h 
                           ? "bg-white text-[#6B5E51] border-white shadow-lg" 
                           : "bg-white/5 border-white/10 hover:bg-white/10"
@@ -322,7 +338,7 @@ export default function QuoteForm() {
                   ))}
                   <button
                     onClick={() => setFormData({ ...formData, hours: "custom" })}
-                    className={`w-full py-4 rounded-2xl text-xl font-medium border transition-all ${
+                    className={`w-full py-4 rounded-xl md:rounded-2xl text-xl font-medium border transition-all ${
                       formData.hours === "custom" 
                         ? "bg-white text-[#6B5E51] border-white shadow-lg" 
                         : "bg-white/5 border-white/10 hover:bg-white/10"
@@ -341,7 +357,7 @@ export default function QuoteForm() {
                       type="number"
                       min="5"
                       placeholder="Enter number of hours"
-                      className="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+                      className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
                       value={formData.customHours}
                       onChange={(e) => {
                         const val = e.target.value;
@@ -355,14 +371,14 @@ export default function QuoteForm() {
             </FormStep>
 
             <FormStep isActive={step === 4} direction={direction}>
-              <div className="space-y-8">
+              <div className="space-y-6 md:space-y-8">
                 <h1 className="text-3xl md:text-4xl font-bold">What type of event is it?</h1>
-                <div className="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="grid grid-cols-1 gap-3 max-h-[400px] md:max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                   {Object.keys(settings?.eventSurplus || {}).map((type) => (
                     <button
                       key={type}
                       onClick={() => setFormData({ ...formData, eventType: type })}
-                      className={`w-full py-3 rounded-2xl text-lg font-medium border transition-all ${
+                      className={`w-full py-4 rounded-xl md:rounded-2xl text-lg font-medium border transition-all ${
                         formData.eventType === type 
                           ? "bg-white text-[#6B5E51] border-white shadow-lg" 
                           : "bg-white/5 border-white/10 hover:bg-white/10"
@@ -378,12 +394,12 @@ export default function QuoteForm() {
             <FormStep isActive={step === 5} direction={direction}>
               <div className="space-y-6">
                 <h1 className="text-3xl md:text-4xl font-bold">Signature Drinks</h1>
-                <div className="space-y-3 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-3 max-h-[400px] md:max-h-[320px] overflow-y-auto pr-2 custom-scrollbar">
                   {Object.keys(formData.signatureDrinks).map((drink) => {
                     if (drink === "Iced dirty matcha" && formData.eventType !== "Matcha") return null; 
                     
                     return (
-                      <div key={drink} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10">
+                      <div key={drink} className="flex items-center justify-between p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
                         <span className="text-lg flex-1 mr-4">{drink}</span>
                         <div className="flex items-center gap-4 bg-white/10 rounded-xl px-2 py-1">
                           <button 
@@ -411,11 +427,11 @@ export default function QuoteForm() {
             <FormStep isActive={step === 6} direction={direction}>
               <div className="space-y-6">
                 <h1 className="text-3xl md:text-4xl font-bold">Custom Upgrade</h1>
-                <div className="space-y-6 max-h-[380px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-6 max-h-[400px] md:max-h-[380px] overflow-y-auto pr-2 custom-scrollbar">
                   <section className="space-y-3">
                     <p className="text-lg font-semibold opacity-70">Matcha Upgrade</p>
                     {Object.keys(formData.matchaUpgrade).map((drink) => (
-                      <div key={drink} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10">
+                      <div key={drink} className="flex items-center justify-between p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
                         <span className="text-lg flex-1 mr-4">{drink}</span>
                         <div className="flex items-center gap-4 bg-white/10 rounded-xl px-2 py-1">
                           <button 
@@ -441,7 +457,7 @@ export default function QuoteForm() {
                     <p className="text-lg font-semibold opacity-70">Machine Canned Beverages</p>
                     <div className="relative">
                       <select 
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30"
                         value={formData.cannedBeverages}
                         onChange={(e) => setFormData({ ...formData, cannedBeverages: e.target.value })}
                       >
@@ -461,14 +477,14 @@ export default function QuoteForm() {
             <FormStep isActive={step === 7} direction={direction}>
               <div className="space-y-6">
                 <h1 className="text-3xl md:text-4xl font-bold">Baked Goods Add-ons</h1>
-                <div className="space-y-6 max-h-[380px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-6 max-h-[400px] md:max-h-[380px] overflow-y-auto pr-2 custom-scrollbar">
                   <section className="space-y-4">
-                    <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                    <div className="p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-lg font-medium">Individual Pastries</span>
                         <span className="text-sm opacity-60">$7.00 per pastry</span>
                       </div>
-                      <div className="flex items-center justify-center gap-6 bg-white/10 rounded-2xl py-3 px-6">
+                      <div className="flex items-center justify-center gap-6 bg-white/10 rounded-xl md:rounded-2xl py-3 px-6">
                         <button 
                           onClick={() => setFormData(prev => ({ ...prev, bakedGoods: { ...prev.bakedGoods, count: Math.max(0, prev.bakedGoods.count - 1), useBulk: false } }))}
                           className="p-2 hover:bg-white/20 rounded-xl transition-colors"
@@ -494,7 +510,7 @@ export default function QuoteForm() {
                       </div>
                     </div>
 
-                    <label className="flex items-center gap-4 p-6 rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
+                    <label className="flex items-center gap-4 p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
                       <div className="relative flex items-center justify-center">
                         <input
                           type="checkbox"
@@ -506,7 +522,7 @@ export default function QuoteForm() {
                       </div>
                       <div className="flex flex-col">
                         <span className="text-xl font-bold">40 Pastries Bulk Pack</span>
-                        <span className="text-sm opacity-60">$180.00 Flat Fee (Best Value)</span>
+                        <span className="text-sm opacity-60">$180.00 Flat Fee</span>
                       </div>
                     </label>
                   </section>
@@ -516,9 +532,9 @@ export default function QuoteForm() {
                       <h2 className="text-2xl font-bold">Alternative Milk</h2>
                       <p className="text-sm opacity-60">Almond milks, Oat milk, Lactose-free milk</p>
                     </div>
-                    <div className="flex items-center justify-between p-6 rounded-2xl bg-white/5 border border-white/10">
+                    <div className="flex items-center justify-between p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
                       <span className="text-lg font-medium">Cost /2hrs</span>
-                      <div className="flex items-center gap-6 bg-white/10 rounded-2xl py-3 px-6">
+                      <div className="flex items-center gap-6 bg-white/10 rounded-xl md:rounded-2xl py-3 px-6">
                         <button 
                           onClick={() => setFormData(prev => ({ ...prev, alternativeMilk: Math.max(0, prev.alternativeMilk - 1) }))}
                           className="p-2 hover:bg-white/20 rounded-xl transition-colors"
@@ -548,42 +564,44 @@ export default function QuoteForm() {
             </FormStep>
           </div>
 
-          {/* Dynamic Total Display above OK button */}
-          <div className="mt-4 mb-2 flex justify-center">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={calculatedCost}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="text-2xl font-bold text-white/90"
-              >
-                Total: ${calculatedCost}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          {/* Bottom Control Bar */}
+          <div className="mt-auto pt-8 space-y-6">
+            <div className="flex justify-center">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={calculatedCost}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="text-2xl font-bold text-white/90"
+                >
+                  Total: ${calculatedCost}
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
-          {/* Navigation */}
-          <div className="mt-8 flex items-center gap-4">
-            {step > 1 && (
-              <button 
-                onClick={handleBack} 
-                className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors shrink-0"
+            <div className="flex items-center gap-4 pb-8 md:pb-0">
+              {step > 1 && (
+                <button 
+                  onClick={handleBack} 
+                  className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors shrink-0"
+                >
+                  <ArrowLeft className="w-6 h-6" />
+                </button>
+              )}
+              <button
+                onClick={step === totalSteps ? handleSubmit : handleNext}
+                className="flex-1 bg-white text-[#6B5E51] h-14 rounded-full text-xl font-bold hover:bg-opacity-90 transition-all active:scale-[0.98]"
               >
-                <ArrowLeft className="w-6 h-6" />
+                {step === totalSteps ? "OK" : "Next"}
               </button>
-            )}
-            <button
-              onClick={step === totalSteps ? handleSubmit : handleNext}
-              className="flex-1 bg-white text-[#6B5E51] h-14 rounded-full text-xl font-bold hover:bg-opacity-90 transition-all active:scale-[0.98]"
-            >
-              {step === totalSteps ? "OK" : "Next"}
-            </button>
+            </div>
           </div>
         </div>
       </div>
-      {/* Logo at Bottom */}
-      <div className="mt-12 opacity-80 max-w-[200px]">
+
+      {/* Logo at Bottom - Desktop Only */}
+      <div className="hidden md:block mt-12 opacity-80 max-w-[200px]">
         <img src={logoImg} alt="grind theory logo" className="w-full h-auto" />
       </div>
     </div>
