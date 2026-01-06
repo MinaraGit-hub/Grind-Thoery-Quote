@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import logoImg from "@assets/Untitled-1_1767674078681.png";
 import stockImage from "@assets/stock_images/modern_aesthetic_cof_0cee769b.jpg";
 
+import Untitled_1 from "@assets/Untitled-1.png";
+
 export default function QuoteForm() {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(0);
@@ -303,9 +305,8 @@ export default function QuoteForm() {
     <div className="min-h-screen bg-background flex flex-col items-center py-4 md:py-12 px-4 md:px-6 overflow-x-hidden">
       {/* Mobile Logo */}
       <div className="md:hidden w-full max-w-md mb-4">
-        <img src="/attached_assets/wht_1767715178549.png" alt="Grind Theory" className="h-8 mx-auto" />
+        <img src={Untitled_1} alt="Grind Theory" className="h-8 mx-auto" />
       </div>
-      
       {/* Progress Bar - Desktop Only */}
       <div className="hidden md:block w-full max-w-5xl mb-8">
         <CircularProgress currentStep={step} totalSteps={displaySteps} className="scale-100" />
