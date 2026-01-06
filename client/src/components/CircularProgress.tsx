@@ -35,7 +35,7 @@ export function CircularProgress({
                 style={{
                    borderColor: "hsl(var(--primary))",
                    backgroundColor: isCompleted ? "hsl(var(--primary))" : "transparent",
-                   color: isCompleted ? "white" : isActive ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"
+                   color: isCompleted ? "hsl(var(--secondary))" : isActive ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"
                 }}
               >
                 {isCompleted ? (
