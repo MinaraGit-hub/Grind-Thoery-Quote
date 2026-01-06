@@ -31,8 +31,8 @@
   }
   
   h1 {
-    font-family: 'Mistically', cursive;
-    @apply font-bold tracking-tight;
+    font-family: 'Tobias', serif;
+    @apply font-normal tracking-tight;
   }
   h2, h3, h4, h5, h6 {
     font-family: 'Tobias', serif;
