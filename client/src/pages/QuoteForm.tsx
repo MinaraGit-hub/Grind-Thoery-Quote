@@ -95,10 +95,10 @@ export default function QuoteForm() {
       finalCost += formData.bakedGoods.count * 7;
     }
 
-    // Add Alternative milk: $40 flat for every 2-hour added
-    if (!isNaN(hoursNum) && hoursNum > 0) {
-      const altMilkIncrements = Math.floor(hoursNum / 2);
-      finalCost += formData.alternativeMilk * (altMilkIncrements * 40);
+    // Add Alternative milk: $200 for 2 hours, then $200 per additional hour
+    if (!isNaN(hoursNum) && hoursNum >= 2 && formData.alternativeMilk > 0) {
+      const altMilkCost = 200 + (hoursNum - 2) * 200;
+      finalCost += formData.alternativeMilk * altMilkCost;
     }
     
     return finalCost;
@@ -575,7 +575,7 @@ export default function QuoteForm() {
                         </button>
                       </div>
                     </div>
-                    <p className="text-xs opacity-50 text-right">+$40.00 flat for every 2-hour increment</p>
+                    <p className="text-xs opacity-50 text-right">+$200.00 for 2 hours, then $200.00 per additional hour</p>
                   </section>
                 </div>
               </div>
