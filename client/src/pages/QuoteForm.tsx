@@ -95,10 +95,9 @@ export default function QuoteForm() {
       finalCost += formData.bakedGoods.count * 7;
     }
 
-    // Add Alternative milk: $200 for 2 hours, then $200 per additional hour
+    // Add Alternative milk: $200 total for the event
     if (!isNaN(hoursNum) && hoursNum >= 2 && formData.alternativeMilk > 0) {
-      const altMilkCost = 200 + (hoursNum - 2) * 200;
-      finalCost += formData.alternativeMilk * altMilkCost;
+      finalCost += formData.alternativeMilk * 200;
     }
     
     return finalCost;
@@ -575,7 +574,7 @@ export default function QuoteForm() {
                         </button>
                       </div>
                     </div>
-                    <p className="text-xs opacity-50 text-right">+$200.00 for 2 hours, then $200.00 per additional hour</p>
+                    <p className="text-xs opacity-50 text-right">+$200.00 flat fee</p>
                   </section>
                 </div>
               </div>
