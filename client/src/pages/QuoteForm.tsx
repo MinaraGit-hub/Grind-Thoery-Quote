@@ -14,6 +14,7 @@ export default function QuoteForm() {
   const [formData, setFormData] = useState({
     fullName: "",
     mobileNumber: "",
+    eventType: "Private Function",
     hours: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -22,15 +23,22 @@ export default function QuoteForm() {
   const createSubmission = useCreateSubmission();
   const { toast } = useToast();
 
-  const totalSteps = 2; // Logic still uses 2 steps
-  const displaySteps = 4; // UI shows 4 steps to match image
+  const totalSteps = 3; 
+  const displaySteps = 4; 
 
   const calculatedCost = useMemo(() => {
     if (!settings || !formData.hours) return 0;
+    
+    // Base cost from hours
     const specificRate = settings.hourlyRates[formData.hours as keyof typeof settings.hourlyRates];
-    if (specificRate) return specificRate;
-    return settings.baseRate * parseInt(formData.hours);
-  }, [settings, formData.hours]);
+    const baseCost = specificRate || (settings.baseRate * parseInt(formData.hours));
+    
+    // Apply event surplus
+    const surplusPercent = settings.eventSurplus?.[formData.eventType] ?? 0;
+    const finalCost = Math.round(baseCost * (1 + surplusPercent / 100));
+    
+    return finalCost;
+  }, [settings, formData.hours, formData.eventType]);
 
   const handleNext = () => {
     if (step === 1) {
@@ -38,6 +46,16 @@ export default function QuoteForm() {
         toast({
           title: "Required fields missing",
           description: "Please fill in your name and mobile number.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    if (step === 2) {
+      if (!formData.eventType) {
+        toast({
+          title: "Selection required",
+          description: "Please select an event type.",
           variant: "destructive",
         });
         return;
@@ -66,6 +84,7 @@ export default function QuoteForm() {
       await createSubmission.mutateAsync({
         fullName: formData.fullName,
         mobileNumber: formData.mobileNumber,
+        eventType: formData.eventType,
         hours: parseInt(formData.hours),
         calculatedCost: calculatedCost,
       });
@@ -100,7 +119,7 @@ export default function QuoteForm() {
           </div>
           <h2 className="text-4xl font-bold mb-4">Success!</h2>
           <p className="opacity-80 text-lg mb-8">
-            Thank you, {formData.fullName}. Quote received.
+            Thank you, {formData.fullName}. Quote received for your {formData.eventType}.
           </p>
           <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
             <p className="text-sm uppercase tracking-widest opacity-60 mb-1">Total</p>
@@ -154,8 +173,29 @@ export default function QuoteForm() {
 
             <FormStep isActive={step === 2} direction={direction}>
               <div className="space-y-8">
+                <h1 className="text-3xl md:text-4xl font-bold">What type of event is it?</h1>
+                <div className="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                  {Object.keys(settings?.eventSurplus || {}).map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setFormData({ ...formData, eventType: type })}
+                      className={`w-full py-3 rounded-2xl text-lg font-medium border transition-all ${
+                        formData.eventType === type 
+                          ? "bg-white text-card border-white shadow-lg" 
+                          : "bg-white/5 border-white/10 hover:bg-white/10"
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </FormStep>
+
+            <FormStep isActive={step === 3} direction={direction}>
+              <div className="space-y-8">
                 <h1 className="text-3xl md:text-4xl font-bold">How many hours?</h1>
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   {Object.keys(settings?.hourlyRates || {}).map((h) => (
                     <button
                       key={h}

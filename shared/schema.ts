@@ -4,15 +4,22 @@ import { z } from "zod";
 
 // === TABLE DEFINITIONS ===
 
-// Admin/System settings for form configuration
+// Form settings for form configuration
 export const formSettings = pgTable("form_settings", {
   id: serial("id").primaryKey(),
-  baseRate: integer("base_rate").notNull().default(50), // Default base rate
+  baseRate: integer("base_rate").notNull().default(50),
   hourlyRates: jsonb("hourly_rates").$type<Record<string, number>>().notNull().default({
     "1": 50,
     "2": 90,
     "3": 130,
     "4": 160
+  }),
+  eventSurplus: jsonb("event_surplus").$type<Record<string, number>>().notNull().default({
+    "Corporate": 10,
+    "Wedding": 15,
+    "Private Function": 0,
+    "Market/Festival": 10,
+    "School/Community": -10
   }),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -22,9 +29,10 @@ export const submissions = pgTable("submissions", {
   id: serial("id").primaryKey(),
   fullName: text("full_name").notNull(),
   mobileNumber: text("mobile_number").notNull(),
+  eventType: text("event_type").notNull().default("Private Function"),
   hours: integer("hours").notNull(),
   calculatedCost: integer("calculated_cost").notNull(),
-  status: text("status").notNull().default("new"), // new, contacted, completed
+  status: text("status").notNull().default("new"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
