@@ -22,31 +22,27 @@ export function CircularProgress({
         return (
           <div key={i} className="flex items-center">
             <div className="relative">
-              <motion.div
-                initial={false}
-                animate={{
-                  backgroundColor: isCompleted ? "rgb(var(--card))" : "transparent",
-                  borderColor: isCompleted || isActive ? "rgb(var(--card))" : "rgba(var(--card), 0.2)",
-                  color: isCompleted ? "white" : isActive ? "rgb(var(--card))" : "rgba(var(--card), 0.4)",
-                }}
-                className="w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-colors duration-300 bg-[#6f6052] text-[#6f6052]"
-                style={{
-                   borderColor: "hsl(var(--primary))",
-                   backgroundColor: isCompleted ? "hsl(var(--primary))" : "transparent",
-                   color: isCompleted ? "hsl(var(--secondary))" : isActive ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"
-                }}
+              <div
+                className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-all duration-300 ${
+                  isCompleted 
+                    ? "bg-[#6B5E51] border-[#6B5E51] text-white" 
+                    : isActive 
+                      ? "border-[#6B5E51] text-[#6B5E51] bg-white/5" 
+                      : "border-[#6B5E51]/20 text-[#6B5E51]/40"
+                }`}
               >
                 {isCompleted ? (
                   <Check className="w-5 h-5" />
                 ) : (
                   stepNumber
                 )}
-              </motion.div>
+              </div>
             </div>
             {i < totalSteps - 1 && (
               <div 
-                className="w-12 h-[2px] mx-2"
-                style={{ backgroundColor: isCompleted ? "hsl(var(--primary))" : "hsl(var(--muted))" }}
+                className={`w-12 h-[2px] mx-2 transition-colors duration-300 ${
+                  isCompleted ? "bg-[#6B5E51]" : "bg-[#6B5E51]/10"
+                }`}
               />
             )}
           </div>

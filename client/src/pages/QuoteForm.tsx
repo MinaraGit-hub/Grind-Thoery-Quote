@@ -33,12 +33,12 @@ export default function QuoteForm() {
     let baseCost = 0;
     if (formData.hours === "custom") {
       const h = parseInt(formData.customHours);
-      if (isNaN(h)) return 0;
+      if (isNaN(h) || h < 0) return 0;
       baseCost = h * 200;
     } else {
       // Base cost from hours
       const specificRate = settings.hourlyRates[formData.hours as keyof typeof settings.hourlyRates];
-      baseCost = specificRate || (settings.baseRate * parseInt(formData.hours));
+      baseCost = specificRate || (settings.baseRate * (parseInt(formData.hours) || 0));
     }
     
     // Apply event surplus
@@ -139,7 +139,7 @@ export default function QuoteForm() {
             Thank you, {formData.fullName}. Quote received for your {formData.eventType}.
           </p>
           <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
-            <p className="text-sm uppercase tracking-widest opacity-60 mb-1">Total</p>
+            <p className="text-sm uppercase tracking-widest opacity-60 mb-1">Total Quote</p>
             <p className="text-5xl font-bold">${calculatedCost}</p>
           </div>
           <button onClick={() => window.location.reload()} className="mt-8 opacity-60 hover:opacity-100 transition-opacity">
@@ -198,7 +198,7 @@ export default function QuoteForm() {
                       onClick={() => setFormData({ ...formData, hours: h })}
                       className={`w-full py-4 rounded-2xl text-xl font-medium border transition-all ${
                         formData.hours === h 
-                          ? "bg-white text-card border-white shadow-lg" 
+                          ? "bg-white text-[#6B5E51] border-white shadow-lg" 
                           : "bg-white/5 border-white/10 hover:bg-white/10"
                       }`}
                     >
@@ -209,7 +209,7 @@ export default function QuoteForm() {
                     onClick={() => setFormData({ ...formData, hours: "custom" })}
                     className={`w-full py-4 rounded-2xl text-xl font-medium border transition-all ${
                       formData.hours === "custom" 
-                        ? "bg-white text-card border-white shadow-lg" 
+                        ? "bg-white text-[#6B5E51] border-white shadow-lg" 
                         : "bg-white/5 border-white/10 hover:bg-white/10"
                     }`}
                   >
@@ -248,7 +248,7 @@ export default function QuoteForm() {
                       onClick={() => setFormData({ ...formData, eventType: type })}
                       className={`w-full py-3 rounded-2xl text-lg font-medium border transition-all ${
                         formData.eventType === type 
-                          ? "bg-white text-card border-white shadow-lg" 
+                          ? "bg-white text-[#6B5E51] border-white shadow-lg" 
                           : "bg-white/5 border-white/10 hover:bg-white/10"
                       }`}
                     >
@@ -276,15 +276,18 @@ export default function QuoteForm() {
           </div>
 
           {/* Navigation */}
-          <div className="mt-2 flex items-center gap-4">
+          <div className="mt-8 flex items-center gap-4">
             {step > 1 && (
-              <button onClick={handleBack} className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors">
+              <button 
+                onClick={handleBack} 
+                className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors shrink-0"
+              >
                 <ArrowLeft className="w-6 h-6" />
               </button>
             )}
             <button
               onClick={step === totalSteps ? handleSubmit : handleNext}
-              className="flex-1 bg-white text-card py-4 rounded-full text-xl font-bold hover:bg-opacity-90 transition-all active:scale-[0.98]"
+              className="flex-1 bg-white text-[#6B5E51] h-14 rounded-full text-xl font-bold hover:bg-opacity-90 transition-all active:scale-[0.98]"
             >
               {step === totalSteps ? "OK" : "Next"}
             </button>
