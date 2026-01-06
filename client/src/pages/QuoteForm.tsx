@@ -304,29 +304,30 @@ export default function QuoteForm() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center py-4 md:py-12 px-4 md:px-6 overflow-x-hidden">
       {/* Mobile Logo */}
-      <div className="md:hidden w-full max-w-md mb-4">
-        <img src={Untitled_1} alt="Grind Theory" className="h-8 mx-auto" />
+      <div className="md:hidden w-full mb-4 px-2">
+        <img src={Untitled_1} alt="Grind Theory" className="h-10 mx-auto" />
       </div>
+      
       {/* Progress Bar - Desktop Only */}
       <div className="hidden md:block w-full max-w-5xl mb-8">
         <CircularProgress currentStep={step} totalSteps={displaySteps} className="scale-100" />
       </div>
       {/* Main Container */}
-      <div className="w-full max-w-5xl md:min-h-[600px] bg-card rounded-2xl md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-card-border/30 md:border-card-border/50">
+      <div className="w-full flex-1 md:flex-none max-w-5xl md:min-h-[600px] bg-card rounded-2xl md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-card-border/30 md:border-card-border/50">
         
         {/* Left Side: Image */}
         <div 
-          className="w-full md:w-5/12 bg-cover bg-center h-40 md:h-auto shrink-0 rounded-t-2xl md:rounded-none"
+          className="w-full md:w-5/12 bg-cover bg-center h-32 md:h-auto shrink-0 rounded-t-2xl md:rounded-none"
           style={{ backgroundImage: `url(${stockImage})` }}
         />
 
         {/* Right Side: Form Content */}
-        <div className="w-full md:w-7/12 p-5 md:p-10 flex flex-col text-card-foreground relative min-h-[400px]">
+        <div className="w-full md:w-7/12 px-5 py-4 md:p-10 flex flex-col text-card-foreground relative flex-1">
           
           {/* Mobile Progress Indicator */}
-          <div className="md:hidden flex justify-between items-center mb-5">
-            <span className="text-sm opacity-60 font-medium uppercase tracking-wider">Step {step} of {displaySteps}</span>
-            <div className="h-1 w-28 bg-white/10 rounded-full overflow-hidden">
+          <div className="md:hidden flex justify-between items-center mb-4 gap-4">
+            <span className="text-xs opacity-60 font-medium uppercase tracking-wider whitespace-nowrap">Step {step} of {displaySteps}</span>
+            <div className="h-1 flex-1 max-w-32 bg-white/10 rounded-full overflow-hidden">
               <div 
                 className="h-full bg-white transition-all duration-300" 
                 style={{ width: `${(step / displaySteps) * 100}%` }}
