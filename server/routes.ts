@@ -5,6 +5,7 @@ import { api } from "@shared/routes";
 import { z } from "zod";
 import { setupAuth } from "./replit_integrations/auth";
 import { isAuthenticated } from "./replit_integrations/auth/replitAuth";
+import { sendQuoteEmail } from "./resend";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -55,6 +56,35 @@ export async function registerRoutes(
       // const expectedCost = rate * input.hours;
 
       const submission = await storage.createSubmission(input);
+
+      if (input.wantEmail && input.emailAddress) {
+        const emailAddr: string = input.emailAddress;
+        try {
+          const hoursDisplay = String(input.hours) + " hours";
+          const totalSigDrinks = Object.values(input.signatureDrinks || {}).reduce((a: number, b: number) => a + b, 0);
+          const standardMatcha = (input.matchaUpgrade as Record<string, number>)?.["Standard Matcha (hot + iced)"] || 0;
+          const specialtyMatcha = (input.matchaUpgrade as Record<string, number>)?.["Matcha specialty menu"] || 0;
+          const bakedGoodsData = input.bakedGoods as { count: number; useBulk: boolean };
+          const brandingData = input.branding as { cupCustomization: string; cartBranding: string };
+
+          await sendQuoteEmail(emailAddr, {
+            fullName: input.fullName,
+            eventPackage: input.hasAddon ? "Base Package (+$650)" : "Not selected",
+            guestCount: input.guestCount || "1–30",
+            hours: hoursDisplay,
+            eventType: input.eventType || "Not selected",
+            signatureDrinks: `${totalSigDrinks} drinks`,
+            customUpgrades: `${standardMatcha + specialtyMatcha} matcha, ${input.cannedBeverages !== "none" ? input.cannedBeverages + " cans" : "No cans"}`,
+            bakedGoods: `${bakedGoodsData?.useBulk ? "40 Bulk Pack" : (bakedGoodsData?.count || 0) + " pastries"}`,
+            brandingUpgrades: `${brandingData?.cupCustomization !== "none" ? (brandingData?.cupCustomization === "stickers" ? "Stickers" : "Sleeves") : "None"}${brandingData?.cartBranding !== "none" ? ", " + brandingData?.cartBranding : ""}`,
+            estimatedCostLow: input.calculatedCost,
+            estimatedCostHigh: input.calculatedCost + 400,
+          });
+        } catch (emailError) {
+          console.error("Failed to send quote email:", emailError);
+        }
+      }
+
       res.status(201).json(submission);
     } catch (err) {
       if (err instanceof z.ZodError) {
