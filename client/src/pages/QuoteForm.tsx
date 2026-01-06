@@ -665,7 +665,10 @@ export default function QuoteForm() {
               )}
               <button
                 onClick={step === totalSteps ? handleSubmit : handleNext}
-                className="flex-1 bg-white text-[#6B5E51] h-14 rounded-full text-xl font-bold hover:bg-opacity-90 transition-all active:scale-[0.98]"
+                disabled={(step === 3 && !formData.hours) || (step === totalSteps && createSubmission.isPending)}
+                className={`flex-1 bg-white text-[#6B5E51] h-14 rounded-full text-xl font-bold hover:bg-opacity-90 transition-all active:scale-[0.98] ${
+                  (step === 3 && !formData.hours) ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 {step === totalSteps ? "OK" : "Next"}
               </button>
