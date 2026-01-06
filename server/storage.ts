@@ -1,38 +1,64 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
+import { 
+  submissions, formSettings,
+  type Submission, type InsertSubmission,
+  type FormSettings, type InsertFormSettings,
+  type UpdateSettingsRequest
+} from "@shared/schema";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  // Form Settings
+  getSettings(): Promise<FormSettings>;
+  updateSettings(settings: UpdateSettingsRequest): Promise<FormSettings>;
+
+  // Submissions
+  createSubmission(submission: InsertSubmission): Promise<Submission>;
+  getSubmissions(): Promise<Submission[]>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  async getSettings(): Promise<FormSettings> {
+    const [settings] = await db.select().from(formSettings).limit(1);
+    
+    // Create default settings if none exist
+    if (!settings) {
+      const [newSettings] = await db.insert(formSettings).values({}).returning();
+      return newSettings;
+    }
+    
+    return settings;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async updateSettings(settings: UpdateSettingsRequest): Promise<FormSettings> {
+    const [existing] = await db.select().from(formSettings).limit(1);
+    
+    if (existing) {
+      const [updated] = await db
+        .update(formSettings)
+        .set({
+          ...settings,
+          updatedAt: new Date(),
+        })
+        .where(eq(formSettings.id, existing.id))
+        .returning();
+      return updated;
+    } else {
+      // If no settings exist yet, create them with the provided values
+      // Note: we cast because InsertFormSettings allows optional but we're creating new
+      const [created] = await db.insert(formSettings).values(settings as InsertFormSettings).returning();
+      return created;
+    }
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async createSubmission(submission: InsertSubmission): Promise<Submission> {
+    const [created] = await db.insert(submissions).values(submission).returning();
+    return created;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async getSubmissions(): Promise<Submission[]> {
+    return await db.select().from(submissions).orderBy(desc(submissions.createdAt));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
