@@ -294,11 +294,6 @@ export default function QuoteForm() {
               {step === totalSteps ? "OK" : "Next"}
             </button>
           </div>
-
-          {/* Background Total Label */}
-          <div className="absolute bottom-12 right-12 opacity-10 text-4xl md:text-5xl font-bold pointer-events-none select-none tracking-[0.15em]">
-            Total: ${calculatedCost}
-          </div>
         </div>
       </div>
 
