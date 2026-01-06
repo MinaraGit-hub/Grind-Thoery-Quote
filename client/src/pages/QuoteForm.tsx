@@ -29,7 +29,9 @@ export default function QuoteForm() {
       "Standard Matcha (hot + iced)": 0,
       "Matcha specialty menu": 0
     } as Record<string, number>,
-    cannedBeverages: "none"
+    cannedBeverages: "none",
+    bakedGoods: { count: 0, useBulk: false },
+    alternativeMilk: 0
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -37,8 +39,8 @@ export default function QuoteForm() {
   const createSubmission = useCreateSubmission();
   const { toast } = useToast();
 
-  const totalSteps = 7; 
-  const displaySteps = 7; 
+  const totalSteps = 8; 
+  const displaySteps = 8; 
 
   const cannedOptions = [
     { label: "None", value: "none", price: 0 },
@@ -53,6 +55,8 @@ export default function QuoteForm() {
     if (!settings) return 0;
     
     let baseCost = 0;
+    const hoursNum = formData.hours === "custom" ? parseInt(formData.customHours) : parseInt(formData.hours);
+    
     if (formData.hours === "custom") {
       const h = parseInt(formData.customHours);
       if (isNaN(h) || h < 5) baseCost = 0;
@@ -83,6 +87,19 @@ export default function QuoteForm() {
     // Add canned beverages cost
     const canned = cannedOptions.find(opt => opt.value === formData.cannedBeverages);
     if (canned) finalCost += canned.price;
+
+    // Add Baked Goods Add-ons
+    if (formData.bakedGoods.useBulk) {
+      finalCost += 180;
+    } else {
+      finalCost += formData.bakedGoods.count * 7;
+    }
+
+    // Add Alternative milk: $40 flat for every 2-hour added
+    if (!isNaN(hoursNum) && hoursNum > 0) {
+      const altMilkIncrements = Math.floor(hoursNum / 2);
+      finalCost += formData.alternativeMilk * (altMilkIncrements * 40);
+    }
     
     return finalCost;
   }, [settings, formData, cannedOptions]);
@@ -160,6 +177,8 @@ export default function QuoteForm() {
         signatureDrinks: formData.signatureDrinks,
         matchaUpgrade: formData.matchaUpgrade,
         cannedBeverages: formData.cannedBeverages,
+        bakedGoods: formData.bakedGoods,
+        alternativeMilk: formData.alternativeMilk,
         calculatedCost: calculatedCost,
       });
       setIsSubmitted(true);
@@ -438,6 +457,88 @@ export default function QuoteForm() {
             </FormStep>
 
             <FormStep isActive={step === 7} direction={direction}>
+              <div className="space-y-6">
+                <h1 className="text-3xl md:text-4xl font-bold">Baked Goods Add-ons</h1>
+                <div className="space-y-6 max-h-[380px] overflow-y-auto pr-2 custom-scrollbar">
+                  <section className="space-y-4">
+                    <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-lg font-medium">Individual Pastries</span>
+                        <span className="text-sm opacity-60">$7.00 per pastry</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-6 bg-white/10 rounded-2xl py-3 px-6">
+                        <button 
+                          onClick={() => setFormData(prev => ({ ...prev, bakedGoods: { ...prev.bakedGoods, count: Math.max(0, prev.bakedGoods.count - 1), useBulk: false } }))}
+                          className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                        >
+                          <Minus className="w-6 h-6" />
+                        </button>
+                        <span className="text-3xl font-bold w-12 text-center">{formData.bakedGoods.useBulk ? 0 : formData.bakedGoods.count}</span>
+                        <button 
+                          onClick={() => setFormData(prev => ({ ...prev, bakedGoods: { ...prev.bakedGoods, count: prev.bakedGoods.count + 1, useBulk: false } }))}
+                          className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                        >
+                          <Plus className="w-6 h-6" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-white/10" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase tracking-widest">
+                        <span className="bg-[#6B5E51] px-4 opacity-40 italic">or choose bulk</span>
+                      </div>
+                    </div>
+
+                    <label className="flex items-center gap-4 p-6 rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none">
+                      <div className="relative flex items-center justify-center">
+                        <input
+                          type="checkbox"
+                          className="peer appearance-none w-7 h-7 border-2 border-white/30 rounded-lg checked:bg-white checked:border-white transition-all"
+                          checked={formData.bakedGoods.useBulk}
+                          onChange={(e) => setFormData({ ...formData, bakedGoods: { count: 0, useBulk: e.target.checked } })}
+                        />
+                        <Check className="absolute w-5 h-5 text-[#6B5E51] opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xl font-bold">40 Pastries Bulk Pack</span>
+                        <span className="text-sm opacity-60">$180.00 Flat Fee (Best Value)</span>
+                      </div>
+                    </label>
+                  </section>
+
+                  <section className="space-y-4 pt-4 border-t border-white/10">
+                    <div className="flex flex-col gap-1">
+                      <h2 className="text-2xl font-bold">Alternative Milk</h2>
+                      <p className="text-sm opacity-60">Almond milks, Oat milk, Lactose-free milk</p>
+                    </div>
+                    <div className="flex items-center justify-between p-6 rounded-2xl bg-white/5 border border-white/10">
+                      <span className="text-lg font-medium">Extra Staff / Station</span>
+                      <div className="flex items-center gap-6 bg-white/10 rounded-2xl py-3 px-6">
+                        <button 
+                          onClick={() => setFormData(prev => ({ ...prev, alternativeMilk: Math.max(0, prev.alternativeMilk - 1) }))}
+                          className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                        >
+                          <Minus className="w-6 h-6" />
+                        </button>
+                        <span className="text-3xl font-bold w-12 text-center">{formData.alternativeMilk}</span>
+                        <button 
+                          onClick={() => setFormData(prev => ({ ...prev, alternativeMilk: prev.alternativeMilk + 1 }))}
+                          className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                        >
+                          <Plus className="w-6 h-6" />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-xs opacity-50 text-right">+$40.00 flat for every 2-hour increment</p>
+                  </section>
+                </div>
+              </div>
+            </FormStep>
+
+            <FormStep isActive={step === 8} direction={direction}>
               <div className="space-y-8 text-center py-12">
                 <h1 className="text-4xl font-bold">Ready to submit?</h1>
                 <p className="text-xl opacity-80">Click the button below to receive your instant quote.</p>

@@ -35,6 +35,8 @@ export const submissions = pgTable("submissions", {
   signatureDrinks: jsonb("signature_drinks").$type<Record<string, number>>().notNull().default({}),
   matchaUpgrade: jsonb("matcha_upgrade").$type<Record<string, number>>().notNull().default({}),
   cannedBeverages: text("canned_beverages").notNull().default("none"),
+  bakedGoods: jsonb("baked_goods").$type<{ count: number; useBulk: boolean }>().notNull().default({ count: 0, useBulk: false }),
+  alternativeMilk: integer("alternative_milk").notNull().default(0),
   calculatedCost: integer("calculated_cost").notNull(),
   status: text("status").notNull().default("new"),
   createdAt: timestamp("created_at").defaultNow(),
