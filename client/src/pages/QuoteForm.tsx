@@ -35,8 +35,11 @@ export default function QuoteForm() {
     branding: {
       cupCustomization: "none",
       stickerCups: 1000,
+      stickerPrice: 0,
       sleeveCups: 1000,
-      cartBranding: "none"
+      sleevePrice: 0,
+      cartBranding: "none",
+      cartPrice: 0
     },
     guestCount: "1–30",
   });
@@ -121,15 +124,30 @@ export default function QuoteForm() {
 
     // Add Alternative milk pricing
     if (!isNaN(hoursNum) && hoursNum >= 2 && formData.alternativeMilk > 0) {
-      let altMilkCost = 0;
-      if (hoursNum <= 2) altMilkCost = 200;
-      else if (hoursNum <= 4) altMilkCost = 400;
-      else if (hoursNum === 5) altMilkCost = 600;
-      else if (hoursNum === 6) altMilkCost = 800;
-      else altMilkCost = 800 + (hoursNum - 6) * 200;
+      let altMilkTierCost = 0;
+      if (hoursNum <= 2) altMilkTierCost = 200;
+      else if (hoursNum <= 4) altMilkTierCost = 400;
+      else if (hoursNum === 5) altMilkTierCost = 600;
+      else if (hoursNum === 6) altMilkTierCost = 800;
+      else altMilkTierCost = 800 + (hoursNum - 6) * 200;
       
-      finalCost += formData.alternativeMilk * altMilkCost;
+      finalCost += formData.alternativeMilk * altMilkTierCost;
     }
+
+    // Add Branding Upgrades cost
+    if (formData.branding.cupCustomization === "stickers") {
+      const extraCups = Math.max(0, formData.branding.stickerCups - 1000);
+      const extraTiers = Math.ceil(extraCups / 200);
+      finalCost += 120 + 250 + extraTiers * 50;
+    } else if (formData.branding.cupCustomization === "sleeves") {
+      const extraCups = Math.max(0, formData.branding.sleeveCups - 1000);
+      const extraTiers = Math.ceil(extraCups / 200);
+      finalCost += 250 + 400 + extraTiers * 80;
+    }
+
+    if (formData.branding.cartBranding === "vinyl") finalCost += 150;
+    else if (formData.branding.cartBranding === "magnetic") finalCost += 280;
+    else if (formData.branding.cartBranding === "acrylic") finalCost += 600;
     
     return finalCost;
   }, [settings, formData, cannedOptions]);
@@ -224,6 +242,12 @@ export default function QuoteForm() {
         cannedBeverages: formData.cannedBeverages,
         bakedGoods: formData.bakedGoods,
         alternativeMilk: formData.alternativeMilk,
+        branding: {
+          ...formData.branding,
+          stickerPrice: formData.branding.cupCustomization === "stickers" ? 120 + 250 + Math.ceil(Math.max(0, formData.branding.stickerCups - 1000) / 200) * 50 : 0,
+          sleevePrice: formData.branding.cupCustomization === "sleeves" ? 250 + 400 + Math.ceil(Math.max(0, formData.branding.sleeveCups - 1000) / 200) * 80 : 0,
+          cartPrice: formData.branding.cartBranding === "vinyl" ? 150 : formData.branding.cartBranding === "magnetic" ? 280 : formData.branding.cartBranding === "acrylic" ? 600 : 0
+        },
         calculatedCost: calculatedCost,
       });
       setIsSubmitted(true);
@@ -684,6 +708,117 @@ export default function QuoteForm() {
             </FormStep>
 
             <FormStep isActive={step === 8} direction={direction}>
+              <div className="space-y-6">
+                <h1 className="text-3xl md:text-4xl font-bold">Branding Upgrades</h1>
+                <div className="space-y-6 max-h-[400px] md:max-h-[380px] overflow-y-auto pr-2 custom-scrollbar">
+                  <section className="space-y-4">
+                    <p className="text-lg font-semibold opacity-70">Cup Customisation</p>
+                    <div className="relative">
+                      <select 
+                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30"
+                        value={formData.branding.cupCustomization}
+                        onChange={(e) => setFormData({ 
+                          ...formData, 
+                          branding: { ...formData.branding, cupCustomization: e.target.value } 
+                        })}
+                      >
+                        <option value="none" className="bg-[#6B5E51]">None</option>
+                        <option value="stickers" className="bg-[#6B5E51]">Custom stickers on cups $120 flat</option>
+                        <option value="sleeves" className="bg-[#6B5E51]">Custom cup sleeves $250 flat</option>
+                      </select>
+                      <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
+                    </div>
+
+                    {formData.branding.cupCustomization !== "none" && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 space-y-4"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-medium">Number of Cups</span>
+                          <span className="text-sm opacity-60">Base 1000 cups</span>
+                        </div>
+                        <div className="flex items-center justify-center gap-6 bg-white/10 rounded-xl md:rounded-2xl py-3 px-6">
+                          <button 
+                            onClick={() => {
+                              const field = formData.branding.cupCustomization === "stickers" ? "stickerCups" : "sleeveCups";
+                              setFormData(prev => ({
+                                ...prev,
+                                branding: { 
+                                  ...prev.branding, 
+                                  [field]: Math.max(1000, prev.branding[field as 'stickerCups' | 'sleeveCups'] - 200) 
+                                }
+                              }));
+                            }}
+                            className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                          >
+                            <Minus className="w-6 h-6" />
+                          </button>
+                          <input
+                            type="number"
+                            min="1000"
+                            step="200"
+                            className="bg-transparent text-3xl font-bold w-24 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            value={formData.branding.cupCustomization === "stickers" ? formData.branding.stickerCups : formData.branding.sleeveCups}
+                            onChange={(e) => {
+                              const val = Math.max(1000, parseInt(e.target.value) || 1000);
+                              const field = formData.branding.cupCustomization === "stickers" ? "stickerCups" : "sleeveCups";
+                              setFormData(prev => ({
+                                ...prev,
+                                branding: { ...prev.branding, [field]: val }
+                              }));
+                            }}
+                          />
+                          <button 
+                            onClick={() => {
+                              const field = formData.branding.cupCustomization === "stickers" ? "stickerCups" : "sleeveCups";
+                              setFormData(prev => ({
+                                ...prev,
+                                branding: { 
+                                  ...prev.branding, 
+                                  [field]: prev.branding[field as 'stickerCups' | 'sleeveCups'] + 200 
+                                }
+                              }));
+                            }}
+                            className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                          >
+                            <Plus className="w-6 h-6" />
+                          </button>
+                        </div>
+                        <p className="text-xs opacity-50 text-center">
+                          {formData.branding.cupCustomization === "stickers" 
+                            ? "1000 cups adds $250, then $50 per 200 extra" 
+                            : "1000 cups adds $400, then $80 per 200 extra"}
+                        </p>
+                      </motion.div>
+                    )}
+                  </section>
+
+                  <section className="space-y-4 pt-4 border-t border-white/10">
+                    <p className="text-lg font-semibold opacity-70">Cart Branding</p>
+                    <div className="relative">
+                      <select 
+                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30"
+                        value={formData.branding.cartBranding}
+                        onChange={(e) => setFormData({ 
+                          ...formData, 
+                          branding: { ...formData.branding, cartBranding: e.target.value } 
+                        })}
+                      >
+                        <option value="none" className="bg-[#6B5E51]">None</option>
+                        <option value="vinyl" className="bg-[#6B5E51]">Temporary vinyl sticker $150</option>
+                        <option value="magnetic" className="bg-[#6B5E51]">Magnetic panels $280</option>
+                        <option value="acrylic" className="bg-[#6B5E51]">Custom acrylic $600</option>
+                      </select>
+                      <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </FormStep>
+
+            <FormStep isActive={step === 9} direction={direction}>
               <div className="space-y-8 text-center py-12">
                 <h1 className="text-4xl font-bold">Ready to submit?</h1>
                 <p className="text-xl opacity-80">Click the button below to receive your instant quote.</p>
