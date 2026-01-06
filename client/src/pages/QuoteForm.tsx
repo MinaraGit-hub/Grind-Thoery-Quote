@@ -49,8 +49,10 @@ export default function QuoteForm() {
   const createSubmission = useCreateSubmission();
   const { toast } = useToast();
 
-  const totalSteps = 8; 
-  const displaySteps = 8; 
+  const totalSteps = 9; 
+  const displaySteps = 9; 
+  const [wantEmail, setWantEmail] = useState(false);
+  const [emailAddress, setEmailAddress] = useState("");
 
   const cannedOptions = [
     { label: "None", value: "none", price: 0 },
@@ -249,6 +251,8 @@ export default function QuoteForm() {
           cartPrice: formData.branding.cartBranding === "vinyl" ? 150 : formData.branding.cartBranding === "magnetic" ? 280 : formData.branding.cartBranding === "acrylic" ? 600 : 0
         },
         calculatedCost: calculatedCost,
+        wantEmail: wantEmail,
+        emailAddress: wantEmail ? emailAddress : undefined,
       });
       setIsSubmitted(true);
     } catch (error) {
@@ -820,9 +824,57 @@ export default function QuoteForm() {
             </FormStep>
 
             <FormStep isActive={step === 9} direction={direction}>
-              <div className="space-y-8 text-center py-12">
-                <h1 className="text-4xl font-bold">Ready to submit?</h1>
-                <p className="text-xl opacity-80">Click the button below to receive your instant quote.</p>
+              <div className="space-y-6">
+                <h1 className="text-3xl md:text-4xl font-bold text-center">Ready to submit?</h1>
+                
+                <div className="space-y-4 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar">
+                  <p className="text-lg font-semibold opacity-70">Quote Estimate Summary:</p>
+                  <ul className="space-y-2 text-base">
+                    <li className="flex justify-between"><span className="opacity-70">Event package:</span> <span>{formData.hasAddon ? "Base Package (+$650)" : "Not selected"}</span></li>
+                    <li className="flex justify-between"><span className="opacity-70">Guest count:</span> <span>{formData.guestCount}</span></li>
+                    <li className="flex justify-between"><span className="opacity-70">Number of hours:</span> <span>{formData.hours === "custom" ? `${formData.customHours} hours` : `${formData.hours} hours`}</span></li>
+                    <li className="flex justify-between"><span className="opacity-70">Event type:</span> <span>{formData.eventType || "Not selected"}</span></li>
+                    <li className="flex justify-between"><span className="opacity-70">Signature drinks:</span> <span>{Object.values(formData.signatureDrinks).reduce((a, b) => a + b, 0)} drinks</span></li>
+                    <li className="flex justify-between"><span className="opacity-70">Custom upgrades:</span> <span>{(formData.matchaUpgrade["Standard Matcha (hot + iced)"] || 0) + (formData.matchaUpgrade["Matcha specialty menu"] || 0)} matcha, {formData.cannedBeverages !== "none" ? `${formData.cannedBeverages} cans` : "No cans"}</span></li>
+                    <li className="flex justify-between"><span className="opacity-70">Baked Goods Add-ons:</span> <span>{formData.bakedGoods.useBulk ? "40 Bulk Pack" : `${formData.bakedGoods.count} pastries`}{formData.alternativeMilk > 0 ? `, Alt milk x${formData.alternativeMilk}` : ""}</span></li>
+                    <li className="flex justify-between"><span className="opacity-70">Branding Upgrades:</span> <span>{formData.branding.cupCustomization !== "none" ? (formData.branding.cupCustomization === "stickers" ? "Stickers" : "Sleeves") : "None"}{formData.branding.cartBranding !== "none" ? `, ${formData.branding.cartBranding}` : ""}</span></li>
+                    <li className="flex justify-between text-sm opacity-60"><span>Miscellaneous costs:</span> <span className="text-right">Varies (travel, power, accessibility, extra staff)</span></li>
+                  </ul>
+
+                  <div className="p-4 rounded-xl md:rounded-2xl bg-white/10 border border-white/20 text-center mt-4">
+                    <p className="text-sm uppercase tracking-widest opacity-60 mb-1">Estimated Cost</p>
+                    <p className="text-2xl md:text-3xl font-bold">${calculatedCost} – ${calculatedCost + 400}</p>
+                  </div>
+
+                  <label className="flex items-center gap-3 p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none mt-4">
+                    <div className="relative flex items-center justify-center">
+                      <input
+                        type="checkbox"
+                        className="peer appearance-none w-6 h-6 border-2 border-white/30 rounded-md checked:bg-white checked:border-white transition-all"
+                        checked={wantEmail}
+                        onChange={(e) => setWantEmail(e.target.checked)}
+                      />
+                      <Check className="absolute w-4 h-4 text-[#6B5E51] opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
+                    </div>
+                    <span className="text-lg font-medium">I would like my quote emailed</span>
+                  </label>
+
+                  {wantEmail && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      className="mt-2"
+                    >
+                      <input
+                        type="email"
+                        placeholder="Enter your email address"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+                        value={emailAddress}
+                        onChange={(e) => setEmailAddress(e.target.value)}
+                      />
+                    </motion.div>
+                  )}
+                </div>
               </div>
             </FormStep>
           </div>

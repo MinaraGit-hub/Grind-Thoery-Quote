@@ -56,6 +56,8 @@ export const submissions = pgTable("submissions", {
   }),
   guestCount: text("guest_count").notNull().default("1–30"),
   calculatedCost: integer("calculated_cost").notNull(),
+  wantEmail: boolean("want_email").notNull().default(false),
+  emailAddress: text("email_address"),
   status: text("status").notNull().default("new"),
   createdAt: timestamp("created_at").defaultNow(),
 });
