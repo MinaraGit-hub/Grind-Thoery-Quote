@@ -881,19 +881,21 @@ export default function QuoteForm() {
 
           {/* Bottom Control Bar */}
           <div className="mt-auto pt-8 space-y-6">
-            <div className="flex justify-center">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={calculatedCost}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="text-2xl font-bold text-white/90"
-                >
-                  Total: ${calculatedCost}
-                </motion.div>
-              </AnimatePresence>
-            </div>
+            {step > 1 && (
+              <div className="flex justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={calculatedCost}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-2xl font-bold text-white/90"
+                  >
+                    Total: ${calculatedCost}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            )}
 
             <div className="flex items-center gap-4 pb-8 md:pb-0">
               {step > 1 && (
