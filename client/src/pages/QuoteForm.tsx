@@ -509,7 +509,7 @@ export default function QuoteForm() {
                 <h1 className="text-3xl md:text-4xl font-bold">Custom Upgrade</h1>
                 <div className="space-y-6 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                   <section className="space-y-3">
-                    <p className="text-lg font-semibold opacity-70">Matcha Upgrade</p>
+                    <p className="text-lg font-semibold opacity-70">Matcha Upgrade:</p>
                     {Object.keys(formData.matchaUpgrade).map((drink) => (
                       <div key={drink} className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
                         <span className="text-lg flex-1 mr-4">{drink}</span>
