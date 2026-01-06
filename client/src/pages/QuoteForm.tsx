@@ -267,7 +267,7 @@ export default function QuoteForm() {
         <CircularProgress currentStep={step} totalSteps={displaySteps} className="scale-100" />
       </div>
       {/* Main Container: Full screen on mobile, limited on desktop */}
-      <div className="w-full max-w-5xl md:min-h-[650px] bg-card md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border-0 md:border border-card-border/50">
+      <div className="w-full max-w-5xl md:min-h-[600px] bg-card md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border-0 md:border border-card-border/50">
         
         {/* Left Side: Image */}
         <div 
@@ -276,7 +276,7 @@ export default function QuoteForm() {
         />
 
         {/* Right Side: Form Content */}
-        <div className="w-full md:w-7/12 p-6 md:p-10 flex flex-col text-card-foreground relative min-h-[500px]">
+        <div className="w-full md:w-7/12 p-6 md:p-10 flex flex-col text-card-foreground relative min-h-[450px]">
           
           {/* Mobile Progress Indicator */}
           <div className="md:hidden flex justify-between items-center mb-6">
