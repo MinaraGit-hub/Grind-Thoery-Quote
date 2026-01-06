@@ -104,17 +104,31 @@ export default function QuoteForm() {
     return finalCost;
   }, [settings, formData, cannedOptions]);
 
-  const handleNext = () => {
-    if (step === 1) {
-      if (!formData.fullName || !formData.mobileNumber) {
-        toast({
-          title: "Required fields missing",
-          description: "Please fill in your name and mobile number.",
-          variant: "destructive",
-        });
-        return;
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateStep = (currentStep: number) => {
+    const newErrors: Record<string, string> = {};
+    
+    if (currentStep === 1) {
+      if (!formData.fullName) {
+        newErrors.fullName = "Full Name is required";
+      }
+      
+      const phoneRegex = /^(?:\+61|0)[2-478](?:[ -]?[0-9]){8}$/;
+      if (!formData.mobileNumber) {
+        newErrors.mobileNumber = "Mobile Number is required";
+      } else if (!phoneRegex.test(formData.mobileNumber.replace(/\s/g, ""))) {
+        newErrors.mobileNumber = "Please enter a valid Australian mobile number (e.g. 0412 345 678)";
       }
     }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (!validateStep(step)) return;
+    
     if (step === 3) {
       if (!formData.hours) {
         toast({
@@ -261,20 +275,32 @@ export default function QuoteForm() {
               <div className="space-y-6 md:space-y-8">
                 <h1 className="text-3xl md:text-4xl font-bold">Personal Information</h1>
                 <div className="space-y-4 md:space-y-6">
-                  <input
-                    type="text"
-                    placeholder="Full Name"
-                    className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
-                    value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Mobile Number"
-                    className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
-                    value={formData.mobileNumber}
-                    onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })}
-                  />
+                  <div className="space-y-1">
+                    <input
+                      type="text"
+                      placeholder="Full Name"
+                      className={`w-full bg-white/10 border ${errors.fullName ? 'border-red-500' : 'border-white/20'} rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30`}
+                      value={formData.fullName}
+                      onChange={(e) => {
+                        setFormData({ ...formData, fullName: e.target.value });
+                        if (errors.fullName) setErrors(prev => ({ ...prev, fullName: "" }));
+                      }}
+                    />
+                    {errors.fullName && <p className="text-red-400 text-sm ml-2">{errors.fullName}</p>}
+                  </div>
+                  <div className="space-y-1">
+                    <input
+                      type="tel"
+                      placeholder="Mobile Number"
+                      className={`w-full bg-white/10 border ${errors.mobileNumber ? 'border-red-500' : 'border-white/20'} rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30`}
+                      value={formData.mobileNumber}
+                      onChange={(e) => {
+                        setFormData({ ...formData, mobileNumber: e.target.value });
+                        if (errors.mobileNumber) setErrors(prev => ({ ...prev, mobileNumber: "" }));
+                      }}
+                    />
+                    {errors.mobileNumber && <p className="text-red-400 text-sm ml-2">{errors.mobileNumber}</p>}
+                  </div>
                 </div>
               </div>
             </FormStep>
