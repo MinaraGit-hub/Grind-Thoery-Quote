@@ -31,9 +31,30 @@
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Tobias', serif;
     @apply font-bold tracking-tight;
   }
+}
+
+@font-face {
+  font-family: 'Tobias';
+  src: url('https://fonts.cdnfonts.com/s/72124/Tobias-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Tobias';
+  src: url('https://fonts.cdnfonts.com/s/72124/Tobias-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Tobias';
+  src: url('https://fonts.cdnfonts.com/s/72124/Tobias-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
 }
 
 @layer components {

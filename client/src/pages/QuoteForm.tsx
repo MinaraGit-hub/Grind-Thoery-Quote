@@ -5,7 +5,7 @@ import { FormStep } from "@/components/FormStep";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import stockImage from '@assets/stock_images/coffee_latte_art_top_1750a1c1.jpg';
+import logoImg from "@assets/Untitled-1_1767674078681.png";
 
 export default function QuoteForm() {
   const [step, setStep] = useState(1);
@@ -196,8 +196,8 @@ export default function QuoteForm() {
       </div>
 
       {/* Logo at Bottom */}
-      <div className="mt-12 flex items-center gap-2 text-primary font-bold tracking-tighter text-3xl opacity-80">
-        grind <div className="w-8 h-10 border-4 border-primary rounded-full flex items-center justify-center text-xl">8</div> theory
+      <div className="mt-12 opacity-80 max-w-[200px]">
+        <img src={logoImg} alt="grind theory logo" className="w-full h-auto" />
       </div>
     </div>
   );
