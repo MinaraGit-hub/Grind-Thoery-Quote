@@ -515,17 +515,17 @@ export default function QuoteForm() {
                     return (
                       <div key={drink} className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
                         <span className="flex-1 mr-4 text-[14px]">{drink}</span>
-                        <div className="flex items-center gap-4 bg-white/10 rounded-xl px-2 py-1">
+                        <div className="flex items-center gap-2 md:gap-4 bg-white/10 rounded-lg md:rounded-xl px-1.5 md:px-2 py-1">
                           <button 
                             onClick={() => updateDrinkQuantity('signature', drink, -1)}
-                            className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                            className="p-0.5 md:p-1 hover:bg-white/20 rounded-md md:rounded-lg transition-colors"
                           >
-                            <Minus className="w-5 h-5" />
+                            <Minus className="w-4 h-4 md:w-5 md:h-5" />
                           </button>
                           <input
                             type="number"
                             min="0"
-                            className="bg-transparent text-xl font-bold w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="bg-transparent text-lg md:text-xl font-bold w-8 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             value={formData.signatureDrinks[drink]}
                             onChange={(e) => {
                               const val = parseInt(e.target.value) || 0;
@@ -537,9 +537,9 @@ export default function QuoteForm() {
                           />
                           <button 
                             onClick={() => updateDrinkQuantity('signature', drink, 1)}
-                            className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                            className="p-0.5 md:p-1 hover:bg-white/20 rounded-md md:rounded-lg transition-colors"
                           >
-                            <Plus className="w-5 h-5" />
+                            <Plus className="w-4 h-4 md:w-5 md:h-5" />
                           </button>
                         </div>
                       </div>
@@ -558,18 +558,18 @@ export default function QuoteForm() {
                     <p className="text-lg font-semibold opacity-70">Matcha Upgrade:</p>
                     {Object.keys(formData.matchaUpgrade).map((drink) => (
                       <div key={drink} className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
-                        <span className="text-lg flex-1 mr-4">{drink}</span>
-                        <div className="flex items-center gap-4 bg-white/10 rounded-xl px-2 py-1">
+                        <span className="text-sm md:text-lg flex-1 mr-3 md:mr-4">{drink}</span>
+                        <div className="flex items-center gap-2 md:gap-4 bg-white/10 rounded-lg md:rounded-xl px-1.5 md:px-2 py-1">
                           <button 
                             onClick={() => updateDrinkQuantity('matcha', drink, -1)}
-                            className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                            className="p-0.5 md:p-1 hover:bg-white/20 rounded-md md:rounded-lg transition-colors"
                           >
-                            <Minus className="w-5 h-5" />
+                            <Minus className="w-4 h-4 md:w-5 md:h-5" />
                           </button>
                           <input
                             type="number"
                             min="0"
-                            className="bg-transparent text-xl font-bold w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="bg-transparent text-lg md:text-xl font-bold w-8 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             value={formData.matchaUpgrade[drink]}
                             onChange={(e) => {
                               const val = parseInt(e.target.value) || 0;
@@ -581,9 +581,9 @@ export default function QuoteForm() {
                           />
                           <button 
                             onClick={() => updateDrinkQuantity('matcha', drink, 1)}
-                            className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                            className="p-0.5 md:p-1 hover:bg-white/20 rounded-md md:rounded-lg transition-colors"
                           >
-                            <Plus className="w-5 h-5" />
+                            <Plus className="w-4 h-4 md:w-5 md:h-5" />
                           </button>
                         </div>
                       </div>
@@ -622,17 +622,17 @@ export default function QuoteForm() {
                         <span className="text-lg font-medium">Individual Pastries</span>
                         <span className="text-sm opacity-60">$7.00 per pastry</span>
                       </div>
-                      <div className="flex items-center justify-center gap-6 bg-white/10 rounded-xl md:rounded-2xl py-3 px-6">
+                      <div className="flex items-center justify-center gap-4 md:gap-6 bg-white/10 rounded-lg md:rounded-2xl py-2 md:py-3 px-4 md:px-6">
                         <button 
                           onClick={() => setFormData(prev => ({ ...prev, bakedGoods: { ...prev.bakedGoods, count: Math.max(0, prev.bakedGoods.count - 1), useBulk: false } }))}
-                          className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                          className="p-1.5 md:p-2 hover:bg-white/20 rounded-lg md:rounded-xl transition-colors"
                         >
-                          <Minus className="w-6 h-6" />
+                          <Minus className="w-5 h-5 md:w-6 md:h-6" />
                         </button>
                           <input
                             type="number"
                             min="0"
-                            className="bg-transparent text-xl font-bold w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="bg-transparent text-lg md:text-xl font-bold w-10 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             value={formData.bakedGoods.useBulk ? 0 : formData.bakedGoods.count}
                             onChange={(e) => {
                               const val = parseInt(e.target.value) || 0;
@@ -644,9 +644,9 @@ export default function QuoteForm() {
                           />
                         <button 
                           onClick={() => setFormData(prev => ({ ...prev, bakedGoods: { ...prev.bakedGoods, count: prev.bakedGoods.count + 1, useBulk: false } }))}
-                          className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                          className="p-1.5 md:p-2 hover:bg-white/20 rounded-lg md:rounded-xl transition-colors"
                         >
-                          <Plus className="w-6 h-6" />
+                          <Plus className="w-5 h-5 md:w-6 md:h-6" />
                         </button>
                       </div>
                     </div>
@@ -682,19 +682,19 @@ export default function QuoteForm() {
                       <h2 className="text-2xl font-bold">Alternative Milk</h2>
                       <p className="text-sm opacity-60">Almond milks, Oat milk, Lactose-free milk</p>
                     </div>
-                    <div className="flex items-center justify-between p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
-                      <span className="text-lg font-medium">Cost /2hrs</span>
-                      <div className="flex items-center gap-6 bg-white/10 rounded-xl md:rounded-2xl py-3 px-6">
+                    <div className="flex items-center justify-between p-4 md:p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
+                      <span className="text-base md:text-lg font-medium">Cost /2hrs</span>
+                      <div className="flex items-center gap-4 md:gap-6 bg-white/10 rounded-lg md:rounded-2xl py-2 md:py-3 px-4 md:px-6">
                         <button 
                           onClick={() => setFormData(prev => ({ ...prev, alternativeMilk: Math.max(0, prev.alternativeMilk - 1) }))}
-                          className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                          className="p-1.5 md:p-2 hover:bg-white/20 rounded-lg md:rounded-xl transition-colors"
                         >
-                          <Minus className="w-6 h-6" />
+                          <Minus className="w-5 h-5 md:w-6 md:h-6" />
                         </button>
                         <input
                           type="number"
                           min="0"
-                          className="bg-transparent text-xl font-bold w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="bg-transparent text-lg md:text-xl font-bold w-10 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           value={formData.alternativeMilk}
                           onChange={(e) => {
                             const val = parseInt(e.target.value) || 0;
@@ -706,9 +706,9 @@ export default function QuoteForm() {
                         />
                         <button 
                           onClick={() => setFormData(prev => ({ ...prev, alternativeMilk: prev.alternativeMilk + 1 }))}
-                          className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                          className="p-1.5 md:p-2 hover:bg-white/20 rounded-lg md:rounded-xl transition-colors"
                         >
-                          <Plus className="w-6 h-6" />
+                          <Plus className="w-5 h-5 md:w-6 md:h-6" />
                         </button>
                       </div>
                     </div>
