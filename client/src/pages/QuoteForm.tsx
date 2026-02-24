@@ -897,9 +897,9 @@ export default function QuoteForm() {
             </button>
           </div>
         </div>
-        <div className="flex justify-center pb-6 pt-4">
-          <img src={grindTheoryLogo} alt="Grind Theory" className="h-8 md:h-10 opacity-60" data-testid="img-grind-theory-logo" />
-        </div>
+      </div>
+      <div className="flex justify-center py-6">
+        <img src={grindTheoryLogo} alt="Grind Theory" className="h-8 md:h-10 opacity-60" data-testid="img-grind-theory-logo" />
       </div>
     </div>
   );
