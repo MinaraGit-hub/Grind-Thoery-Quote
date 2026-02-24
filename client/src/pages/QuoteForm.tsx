@@ -402,16 +402,6 @@ export default function QuoteForm() {
                   </div>
                 </div>
 
-                {formData.hasAddon && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 p-4 rounded-xl md:rounded-2xl bg-white/10 border border-white/20 text-center"
-                  >
-                    <p className="text-sm uppercase tracking-widest opacity-60 mb-1">Base Package Total</p>
-                    <p className="text-3xl font-bold">${pc.basePackagePrice.toFixed(2)}</p>
-                  </motion.div>
-                )}
               </div>
             </FormStep>
 
@@ -882,6 +872,18 @@ export default function QuoteForm() {
               </div>
             </FormStep>
           </div>
+
+          {step >= 2 && formData.hasAddon && (
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 md:mt-6 flex items-center justify-between px-4 md:px-5 py-3 rounded-xl md:rounded-2xl bg-white/10 border border-white/15"
+              data-testid="running-total"
+            >
+              <span className="text-sm md:text-base opacity-70 font-medium">Estimated Total</span>
+              <span className="text-xl md:text-2xl font-bold">${calculatedCost.toLocaleString()}</span>
+            </motion.div>
+          )}
 
           <div className="flex justify-between items-center mt-4 md:mt-8 gap-3">
             {step > 1 && (
