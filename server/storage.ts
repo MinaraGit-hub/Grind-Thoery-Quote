@@ -44,6 +44,8 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return updated;
     } else {
+      // If no settings exist yet, create them with the provided values
+      // Note: we cast because InsertFormSettings allows optional but we're creating new
       const [created] = await db.insert(formSettings).values(settings as InsertFormSettings).returning();
       return created;
     }

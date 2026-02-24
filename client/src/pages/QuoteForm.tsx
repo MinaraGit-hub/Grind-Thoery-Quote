@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useSettings, useCreateSubmission } from "@/hooks/use-form-data";
 import { CircularProgress } from "@/components/CircularProgress";
 import { FormStep } from "@/components/FormStep";
@@ -7,21 +7,11 @@ import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2, Check, Plus,
 import { useToast } from "@/hooks/use-toast";
 import logoImg from "@assets/Untitled-1_1767674078681.png";
 import stockImage from "@assets/stock_images/modern_aesthetic_cof_0cee769b.jpg";
-import logoGif from "@assets/logo-1_1767876779446.gif";
 
 import Untitled_1 from "@assets/Untitled-1.png";
 
 export default function QuoteForm() {
-  const [isInitializing, setIsInitializing] = useState(true);
   const [step, setStep] = useState(1);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsInitializing(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
   const [direction, setDirection] = useState(0);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -280,25 +270,6 @@ export default function QuoteForm() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="w-10 h-10 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (isInitializing) {
-    return (
-      <div className="min-h-screen bg-[#6B5E51] flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          className="relative"
-        >
-          <img 
-            src={logoGif} 
-            alt="Loading..." 
-            className="w-48 h-48 md:w-64 md:h-64 object-contain"
-          />
-        </motion.div>
       </div>
     );
   }
