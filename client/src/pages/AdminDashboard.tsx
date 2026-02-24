@@ -87,9 +87,19 @@ export default function AdminDashboard() {
     retry: false,
   });
 
+  const isAdmin = authData?.authenticated === true;
+
   const [, setLocation] = useLocation();
   const { data: settings, isLoading: isLoadingSettings } = useSettings();
-  const { data: submissions, isLoading: isLoadingSubmissions } = useSubmissions();
+  const { data: submissions, isLoading: isLoadingSubmissions } = useQuery({
+    queryKey: ["/api/submissions"],
+    queryFn: async () => {
+      const res = await fetch("/api/submissions", { credentials: "include" });
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: isAdmin,
+  });
   
   const updateSettings = useUpdateSettings();
   const { toast } = useToast();
@@ -134,7 +144,10 @@ export default function AdminDashboard() {
   }
 
   if (!authData?.authenticated) {
-    return <AdminLogin onSuccess={() => queryClient.invalidateQueries({ queryKey: ["/api/admin/check"] })} />;
+    return <AdminLogin onSuccess={() => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/check"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/submissions"] });
+    }} />;
   }
 
   const handleSaveSettings = async () => {
