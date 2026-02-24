@@ -60,25 +60,27 @@ export async function registerRoutes(
       if (input.wantEmail && input.emailAddress) {
         const emailAddr: string = input.emailAddress;
         try {
+          const pc = settings.pricingConfig as any;
           const hoursDisplay = String(input.hours) + " hours";
           const totalSigDrinks = Object.values(input.signatureDrinks || {}).reduce((a: number, b: number) => a + b, 0);
-          const standardMatcha = (input.matchaUpgrade as Record<string, number>)?.["Standard Matcha (hot + iced)"] || 0;
-          const specialtyMatcha = (input.matchaUpgrade as Record<string, number>)?.["Matcha specialty menu"] || 0;
+          const matchaUpgrade = input.matchaUpgrade as Record<string, number> || {};
+          const totalMatcha = Object.values(matchaUpgrade).reduce((a: number, b: number) => a + b, 0);
           const bakedGoodsData = input.bakedGoods as { count: number; useBulk: boolean };
           const brandingData = input.branding as { cupCustomization: string; cartBranding: string };
+          const costBuffer = pc?.costRangeBuffer ?? 400;
 
           await sendQuoteEmail(emailAddr, {
             fullName: input.fullName,
-            eventPackage: input.hasAddon ? "Base Package (+$650)" : "Not selected",
+            eventPackage: input.hasAddon ? `Base Package (+$${pc?.basePackagePrice ?? 650})` : "Not selected",
             guestCount: input.guestCount || "1–30",
             hours: hoursDisplay,
             eventType: input.eventType || "Not selected",
             signatureDrinks: `${totalSigDrinks} drinks`,
-            customUpgrades: `${standardMatcha + specialtyMatcha} matcha, ${input.cannedBeverages !== "none" ? input.cannedBeverages + " cans" : "No cans"}`,
-            bakedGoods: `${bakedGoodsData?.useBulk ? "40 Bulk Pack" : (bakedGoodsData?.count || 0) + " pastries"}`,
+            customUpgrades: `${totalMatcha} matcha, ${input.cannedBeverages !== "none" ? input.cannedBeverages + " cans" : "No cans"}`,
+            bakedGoods: `${bakedGoodsData?.useBulk ? `${pc?.bakedGoodsBulkCount ?? 40} Bulk Pack` : (bakedGoodsData?.count || 0) + " pastries"}`,
             brandingUpgrades: `${brandingData?.cupCustomization !== "none" ? (brandingData?.cupCustomization === "stickers" ? "Stickers" : "Sleeves") : "None"}${brandingData?.cartBranding !== "none" ? ", " + brandingData?.cartBranding : ""}`,
             estimatedCostLow: input.calculatedCost,
-            estimatedCostHigh: input.calculatedCost + 400,
+            estimatedCostHigh: input.calculatedCost + costBuffer,
           });
         } catch (emailError) {
           console.error("Failed to send quote email:", emailError);
