@@ -1,5 +1,5 @@
 import { useSettings, useUpdateSettings, useSubmissions } from "@/hooks/use-form-data";
-import { Loader2, Save, LayoutDashboard, LogOut, Settings as SettingsIcon, DollarSign, Plus, Minus, Trash2, X, Lock } from "lucide-react";
+import { Loader2, Save, LayoutDashboard, LogOut, Settings as SettingsIcon, DollarSign, Plus, Minus, Trash2, X, Lock, Eye } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
@@ -114,6 +114,7 @@ export default function AdminDashboard() {
   const [newPackageItem, setNewPackageItem] = useState("");
   const [newHourKey, setNewHourKey] = useState("");
   const [newHourPrice, setNewHourPrice] = useState(0);
+  const [selectedSubmission, setSelectedSubmission] = useState<any>(null);
 
   useEffect(() => {
     if (settings) {
@@ -228,6 +229,7 @@ export default function AdminDashboard() {
                       <th className="px-6 py-4 font-semibold text-sm text-gray-500 uppercase tracking-wider">Hours</th>
                       <th className="px-6 py-4 font-semibold text-sm text-gray-500 uppercase tracking-wider">Quote</th>
                       <th className="px-6 py-4 font-semibold text-sm text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-4 font-semibold text-sm text-gray-500 uppercase tracking-wider"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -245,6 +247,16 @@ export default function AdminDashboard() {
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">
                             {sub.status}
                           </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <button
+                            data-testid={`button-view-submission-${sub.id}`}
+                            onClick={() => setSelectedSubmission(sub)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#6B5E51] bg-[#6B5E51]/10 hover:bg-[#6B5E51]/20 rounded-lg transition-colors"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            View
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -630,6 +642,125 @@ export default function AdminDashboard() {
           </div>
         )}
       </main>
+
+      {selectedSubmission && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedSubmission(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} data-testid="modal-submission-detail">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <h2 className="text-lg font-bold text-gray-900">Order Summary</h2>
+              <button onClick={() => setSelectedSubmission(null)} data-testid="button-close-modal" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="p-6 space-y-5">
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem label="Name" value={selectedSubmission.fullName} />
+                <DetailItem label="Mobile" value={selectedSubmission.mobileNumber} />
+                <DetailItem label="Date" value={selectedSubmission.createdAt ? new Date(selectedSubmission.createdAt).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A'} />
+                <DetailItem label="Status" value={selectedSubmission.status} badge />
+              </div>
+
+              <hr className="border-gray-100" />
+
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem label="Event Type" value={selectedSubmission.eventType} />
+                <DetailItem label="Guest Count" value={selectedSubmission.guestCount} />
+                <DetailItem label="Hours" value={`${selectedSubmission.hours} hours`} />
+                <DetailItem label="Base Package" value={selectedSubmission.hasAddon ? 'Yes' : 'No'} />
+              </div>
+
+              <hr className="border-gray-100" />
+
+              {(() => {
+                const sigDrinks = selectedSubmission.signatureDrinks || {};
+                const activeDrinks = Object.entries(sigDrinks).filter(([, qty]: [string, any]) => qty > 0);
+                return activeDrinks.length > 0 ? (
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Signature Drinks</p>
+                    <div className="space-y-1">
+                      {activeDrinks.map(([name, qty]: [string, any]) => (
+                        <div key={name} className="flex justify-between text-sm">
+                          <span className="text-gray-600">{name}</span>
+                          <span className="font-medium text-gray-900">x{qty}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <DetailItem label="Signature Drinks" value="None" />
+                );
+              })()}
+
+              {(() => {
+                const matcha = selectedSubmission.matchaUpgrade || {};
+                const activeMatcha = Object.entries(matcha).filter(([, qty]: [string, any]) => qty > 0);
+                return activeMatcha.length > 0 ? (
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Matcha Upgrades</p>
+                    <div className="space-y-1">
+                      {activeMatcha.map(([name, qty]: [string, any]) => (
+                        <div key={name} className="flex justify-between text-sm">
+                          <span className="text-gray-600">{name}</span>
+                          <span className="font-medium text-gray-900">x{qty}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <DetailItem label="Matcha Upgrades" value="None" />
+                );
+              })()}
+
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem label="Canned Beverages" value={selectedSubmission.cannedBeverages === 'none' ? 'None' : `${selectedSubmission.cannedBeverages} cans`} />
+                <DetailItem label="Alt Milk (extra hrs)" value={selectedSubmission.alternativeMilk > 0 ? `${selectedSubmission.alternativeMilk} hours` : 'None'} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem label="Baked Goods" value={
+                  selectedSubmission.bakedGoods?.useBulk ? 'Bulk Pack' :
+                  (selectedSubmission.bakedGoods?.count > 0 ? `${selectedSubmission.bakedGoods.count} items` : 'None')
+                } />
+                <DetailItem label="Cup Customization" value={
+                  selectedSubmission.branding?.cupCustomization === 'stickers' ? 'Stickers' :
+                  selectedSubmission.branding?.cupCustomization === 'sleeves' ? 'Sleeves' : 'None'
+                } />
+              </div>
+
+              {selectedSubmission.branding?.cartBranding !== 'none' && selectedSubmission.branding?.cartBranding && (
+                <DetailItem label="Cart Branding" value={selectedSubmission.branding.cartBranding} />
+              )}
+
+              {selectedSubmission.emailAddress && (
+                <>
+                  <hr className="border-gray-100" />
+                  <DetailItem label="Email" value={selectedSubmission.emailAddress} />
+                </>
+              )}
+
+              <hr className="border-gray-100" />
+
+              <div className="bg-[#6B5E51] text-white rounded-xl p-4 text-center">
+                <p className="text-xs uppercase tracking-widest opacity-75 mb-1">Estimated Quote</p>
+                <p className="text-2xl font-bold" data-testid="text-modal-quote">${selectedSubmission.calculatedCost} – ${selectedSubmission.calculatedCost + (settings?.pricingConfig?.costRangeBuffer ?? 400)}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DetailItem({ label, value, badge }: { label: string; value: string; badge?: boolean }) {
+  return (
+    <div>
+      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-0.5">{label}</p>
+      {badge ? (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">{value}</span>
+      ) : (
+        <p className="text-sm font-medium text-gray-900 capitalize">{value}</p>
+      )}
     </div>
   );
 }
