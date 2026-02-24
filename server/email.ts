@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-const ADMIN_EMAIL = "sale@grindtheory.au";
+const ADMIN_EMAIL = "Sales@grindtheory.au";
 
 function getTransporter() {
   const user = process.env.SMTP_EMAIL;
