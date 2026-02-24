@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2, Check, Plus, Minus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logoImg from "@assets/Untitled-1_1767674078681.png";
+import grindTheoryLogo from "@assets/Untitled-1_1771895621895.png";
 import stockImage from "@assets/stock_images/modern_aesthetic_cof_0cee769b.jpg";
 import Untitled_1 from "@assets/Untitled-1.png";
 import type { PricingConfig } from "@shared/schema";
@@ -895,6 +896,9 @@ export default function QuoteForm() {
               )}
             </button>
           </div>
+        </div>
+        <div className="flex justify-center pb-6 pt-4">
+          <img src={grindTheoryLogo} alt="Grind Theory" className="h-8 md:h-10 opacity-60" data-testid="img-grind-theory-logo" />
         </div>
       </div>
     </div>
