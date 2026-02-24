@@ -1,18 +1,114 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
+import crypto from "crypto";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
-import { setupAuth } from "./replit_integrations/auth";
-import { isAuthenticated } from "./replit_integrations/auth/replitAuth";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
 import { sendAdminNotification, sendCustomerQuoteEmail, type QuoteSummary } from "./email";
+
+function isAdminAuthenticated(req: Request, res: Response, next: NextFunction) {
+  if (req.session && (req.session as any).isAdmin) {
+    return next();
+  }
+  res.status(401).json({ message: "Unauthorized" });
+}
+
+const loginAttempts = new Map<string, { count: number; lastAttempt: number }>();
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = loginAttempts.get(ip);
+  if (!record) return true;
+  if (now - record.lastAttempt > 15 * 60 * 1000) {
+    loginAttempts.delete(ip);
+    return true;
+  }
+  return record.count < 5;
+}
+
+function recordAttempt(ip: string) {
+  const now = Date.now();
+  const record = loginAttempts.get(ip);
+  if (!record || now - record.lastAttempt > 15 * 60 * 1000) {
+    loginAttempts.set(ip, { count: 1, lastAttempt: now });
+  } else {
+    record.count++;
+    record.lastAttempt = now;
+  }
+}
+
+function constantTimeCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) {
+    crypto.timingSafeEqual(Buffer.from(a), Buffer.from(a));
+    return false;
+  }
+  return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
+}
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Setup Auth FIRST
-  await setupAuth(app);
+  const sessionTtl = 7 * 24 * 60 * 60 * 1000;
+  const pgStore = connectPg(session);
+  const sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true,
+    ttl: sessionTtl,
+    tableName: "sessions",
+  });
+  app.set("trust proxy", 1);
+  app.use(session({
+    secret: process.env.SESSION_SECRET!,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: sessionTtl,
+    },
+  }));
+
+  // === Admin Auth Routes ===
+  app.post("/api/admin/login", (req, res) => {
+    const clientIp = req.ip || "unknown";
+    if (!checkRateLimit(clientIp)) {
+      return res.status(429).json({ message: "Too many attempts. Please try again later." });
+    }
+
+    const { password } = req.body;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminPassword) {
+      return res.status(500).json({ message: "Admin password not configured" });
+    }
+
+    if (typeof password === "string" && constantTimeCompare(password, adminPassword)) {
+      (req.session as any).isAdmin = true;
+      return res.json({ success: true });
+    }
+
+    recordAttempt(clientIp);
+    return res.status(401).json({ message: "Incorrect password" });
+  });
+
+  app.post("/api/admin/logout", (req, res) => {
+    (req.session as any).isAdmin = false;
+    req.session.destroy(() => {
+      res.json({ success: true });
+    });
+  });
+
+  app.get("/api/admin/check", (req, res) => {
+    if (req.session && (req.session as any).isAdmin) {
+      return res.json({ authenticated: true });
+    }
+    return res.json({ authenticated: false });
+  });
 
   // === Form Settings Routes ===
   
@@ -23,7 +119,7 @@ export async function registerRoutes(
   });
 
   // Protected route to update settings
-  app.post(api.settings.update.path, isAuthenticated, async (req, res) => {
+  app.post(api.settings.update.path, isAdminAuthenticated, async (req, res) => {
     try {
       const input = api.settings.update.input.parse(req.body);
       const updated = await storage.updateSettings(input);
@@ -108,7 +204,7 @@ export async function registerRoutes(
   });
 
   // Protected route to view submissions
-  app.get(api.submissions.list.path, isAuthenticated, async (_req, res) => {
+  app.get(api.submissions.list.path, isAdminAuthenticated, async (_req, res) => {
     const submissions = await storage.getSubmissions();
     res.json(submissions);
   });

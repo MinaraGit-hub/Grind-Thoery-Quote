@@ -1,14 +1,92 @@
-import { useAuth } from "@/hooks/use-auth";
 import { useSettings, useUpdateSettings, useSubmissions } from "@/hooks/use-form-data";
-import { Loader2, Save, LayoutDashboard, LogOut, Settings as SettingsIcon, DollarSign, Plus, Minus, Trash2, X } from "lucide-react";
+import { Loader2, Save, LayoutDashboard, LogOut, Settings as SettingsIcon, DollarSign, Plus, Minus, Trash2, X, Lock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { PricingConfig } from "@shared/schema";
 import { DEFAULT_PRICING_CONFIG } from "@shared/schema";
 
+function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ password }),
+      });
+
+      if (res.ok) {
+        onSuccess();
+      } else {
+        setError("Incorrect password");
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-full max-w-sm bg-white rounded-xl shadow-lg p-8">
+        <div className="flex flex-col items-center mb-6">
+          <div className="w-12 h-12 bg-[#6B5E51] rounded-full flex items-center justify-center mb-3">
+            <Lock className="w-6 h-6 text-white" />
+          </div>
+          <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-1">Enter your password to continue</p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <input
+              data-testid="input-admin-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B5E51] focus:border-transparent text-sm"
+              autoFocus
+            />
+          </div>
+          {error && (
+            <p data-testid="text-login-error" className="text-red-500 text-sm text-center">{error}</p>
+          )}
+          <button
+            data-testid="button-admin-login"
+            type="submit"
+            disabled={isLoading || !password}
+            className="w-full py-3 bg-[#6B5E51] text-white rounded-lg font-medium hover:bg-[#5a4f44] disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Sign In"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
-  const { user, isLoading: isLoadingAuth, logout } = useAuth();
+  const queryClient = useQueryClient();
+  const { data: authData, isLoading: isLoadingAuth } = useQuery<{ authenticated: boolean }>({
+    queryKey: ["/api/admin/check"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/check", { credentials: "include" });
+      return res.json();
+    },
+    retry: false,
+  });
+
   const [, setLocation] = useLocation();
   const { data: settings, isLoading: isLoadingSettings } = useSettings();
   const { data: submissions, isLoading: isLoadingSubmissions } = useSubmissions();
@@ -45,13 +123,17 @@ export default function AdminDashboard() {
     }
   }, [settings]);
 
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
+    queryClient.invalidateQueries({ queryKey: ["/api/admin/check"] });
+  };
+
   if (isLoadingAuth) {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin" /></div>;
   }
 
-  if (!user) {
-    window.location.href = "/api/login";
-    return null;
+  if (!authData?.authenticated) {
+    return <AdminLogin onSuccess={() => queryClient.invalidateQueries({ queryKey: ["/api/admin/check"] })} />;
   }
 
   const handleSaveSettings = async () => {
@@ -107,19 +189,8 @@ export default function AdminDashboard() {
         </nav>
 
         <div className="mt-auto p-4 border-t border-gray-100">
-          <div className="flex items-center gap-3 px-4 py-3 mb-2">
-            <img 
-              src={user.profileImageUrl || `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}`} 
-              alt="Profile" 
-              className="w-8 h-8 rounded-full bg-gray-200"
-            />
-            <div className="overflow-hidden">
-              <p className="text-sm font-semibold truncate">{user.firstName} {user.lastName}</p>
-              <p className="text-xs text-gray-500 truncate">{user.email}</p>
-            </div>
-          </div>
           <button 
-            onClick={() => logout()}
+            onClick={() => handleLogout()}
             data-testid="button-logout"
             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
           >
