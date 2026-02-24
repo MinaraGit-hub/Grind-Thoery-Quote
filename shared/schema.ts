@@ -7,7 +7,21 @@ import { z } from "zod";
 // Form settings for form configuration
 export const formSettings = pgTable("form_settings", {
   id: serial("id").primaryKey(),
-  // Configuration for each step
+  baseRate: integer("base_rate").notNull().default(50),
+  hourlyRates: jsonb("hourly_rates").$type<Record<string, number>>().notNull().default({
+    "1": 50,
+    "2": 90,
+    "3": 130,
+    "4": 160
+  }),
+  eventSurplus: jsonb("event_surplus").$type<Record<string, number>>().notNull().default({
+    "Corporate": 10,
+    "Wedding": 15,
+    "Private Function": 0,
+    "Market/Festival": 10,
+    "School/Community": -10
+  }),
+  // New columns added without removing old ones to maintain stability
   steps: jsonb("steps").$type<Record<string, any>>().notNull().default({
     "1": { title: "Personal Information", description: "" },
     "2": { title: "Event Package", description: "Base Service Rate", basePrice: 650 },
@@ -18,7 +32,6 @@ export const formSettings = pgTable("form_settings", {
     "7": { title: "Baked Goods Add-ons", description: "", pastryPrice: 7, bulkPastryPrice: 180 },
     "8": { title: "Branding Upgrades", description: "" }
   }),
-  // Pricing variables and percentages
   pricing: jsonb("pricing").$type<Record<string, any>>().notNull().default({
     guestTiers: {
       "1–30": 0,
@@ -51,7 +64,6 @@ export const formSettings = pgTable("form_settings", {
       cart: { vinyl: 150, magnetic: 280, acrylic: 600 }
     }
   }),
-  // Items for various steps
   items: jsonb("items").$type<Record<string, any>>().notNull().default({
     signatureDrinks: [
       "Iced latte", "Iced dirty matcha", "Strawberry matcha", 
