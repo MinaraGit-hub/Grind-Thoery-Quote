@@ -58,14 +58,17 @@ export async function registerRoutes(
       const submission = await storage.createSubmission(input);
 
       try {
-        const pc = settings.pricingConfig as any;
+        const pc = (settings.pricingConfig as any) || {};
         const hoursDisplay = String(input.hours) + " hours";
         const totalSigDrinks = Object.values(input.signatureDrinks || {}).reduce((a: number, b: number) => a + b, 0);
-        const matchaUpgrade = input.matchaUpgrade as Record<string, number> || {};
+        const matchaUpgrade = (input.matchaUpgrade as Record<string, number>) || {};
         const totalMatcha = Object.values(matchaUpgrade).reduce((a: number, b: number) => a + b, 0);
-        const bakedGoodsData = input.bakedGoods as { count: number; useBulk: boolean };
-        const brandingData = input.branding as { cupCustomization: string; cartBranding: string };
+        const bakedGoodsData = (input.bakedGoods as { count?: number; useBulk?: boolean }) || {};
+        const brandingData = (input.branding as { cupCustomization?: string; cartBranding?: string }) || {};
         const costBuffer = pc?.costRangeBuffer ?? 400;
+
+        const cupCustomization = brandingData?.cupCustomization || "none";
+        const cartBranding = brandingData?.cartBranding || "none";
 
         const summary: QuoteSummary = {
           fullName: input.fullName,
@@ -75,9 +78,9 @@ export async function registerRoutes(
           hours: hoursDisplay,
           eventType: input.eventType || "Not selected",
           signatureDrinks: `${totalSigDrinks} drinks`,
-          customUpgrades: `${totalMatcha} matcha, ${input.cannedBeverages !== "none" ? input.cannedBeverages + " cans" : "No cans"}`,
+          customUpgrades: `${totalMatcha} matcha, ${(input.cannedBeverages && input.cannedBeverages !== "none") ? input.cannedBeverages + " cans" : "No cans"}`,
           bakedGoods: `${bakedGoodsData?.useBulk ? `${pc?.bakedGoodsBulkCount ?? 40} Bulk Pack` : (bakedGoodsData?.count || 0) + " pastries"}`,
-          brandingUpgrades: `${brandingData?.cupCustomization !== "none" ? (brandingData?.cupCustomization === "stickers" ? "Stickers" : "Sleeves") : "None"}${brandingData?.cartBranding !== "none" ? ", " + brandingData?.cartBranding : ""}`,
+          brandingUpgrades: `${cupCustomization !== "none" ? (cupCustomization === "stickers" ? "Stickers" : "Sleeves") : "None"}${cartBranding !== "none" ? ", " + cartBranding : ""}`,
           estimatedCostLow: input.calculatedCost,
           estimatedCostHigh: input.calculatedCost + costBuffer,
         };
