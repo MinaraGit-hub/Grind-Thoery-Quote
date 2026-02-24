@@ -4,15 +4,13 @@ import {
   submissions, formSettings,
   type Submission, type InsertSubmission,
   type FormSettings, type InsertFormSettings,
-  type UpdateSettingsRequest
+  type UpdateSettingsRequest,
+  DEFAULT_PRICING_CONFIG
 } from "@shared/schema";
 
 export interface IStorage {
-  // Form Settings
   getSettings(): Promise<FormSettings>;
   updateSettings(settings: UpdateSettingsRequest): Promise<FormSettings>;
-
-  // Submissions
   createSubmission(submission: InsertSubmission): Promise<Submission>;
   getSubmissions(): Promise<Submission[]>;
 }
@@ -21,10 +19,30 @@ export class DatabaseStorage implements IStorage {
   async getSettings(): Promise<FormSettings> {
     const [settings] = await db.select().from(formSettings).limit(1);
     
-    // Create default settings if none exist
     if (!settings) {
-      const [newSettings] = await db.insert(formSettings).values({}).returning();
+      const [newSettings] = await db.insert(formSettings).values({
+        pricingConfig: DEFAULT_PRICING_CONFIG
+      }).returning();
       return newSettings;
+    }
+    
+    if (!settings.pricingConfig || Object.keys(settings.pricingConfig).length === 0) {
+      const [updated] = await db
+        .update(formSettings)
+        .set({ pricingConfig: DEFAULT_PRICING_CONFIG, updatedAt: new Date() })
+        .where(eq(formSettings.id, settings.id))
+        .returning();
+      return updated;
+    }
+
+    const merged = { ...DEFAULT_PRICING_CONFIG, ...settings.pricingConfig };
+    if (JSON.stringify(merged) !== JSON.stringify(settings.pricingConfig)) {
+      const [updated] = await db
+        .update(formSettings)
+        .set({ pricingConfig: merged, updatedAt: new Date() })
+        .where(eq(formSettings.id, settings.id))
+        .returning();
+      return updated;
     }
     
     return settings;
@@ -44,9 +62,10 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return updated;
     } else {
-      // If no settings exist yet, create them with the provided values
-      // Note: we cast because InsertFormSettings allows optional but we're creating new
-      const [created] = await db.insert(formSettings).values(settings as InsertFormSettings).returning();
+      const [created] = await db.insert(formSettings).values({
+        ...settings as InsertFormSettings,
+        pricingConfig: settings.pricingConfig || DEFAULT_PRICING_CONFIG
+      }).returning();
       return created;
     }
   }

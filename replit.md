@@ -31,7 +31,16 @@ Preferred communication style: Simple, everyday language.
 - **User Storage**: Users table with Replit profile data (id, email, name, profile image)
 
 ## Data Model
-- **formSettings**: Stores configurable base rate and hourly rates (JSONB for flexible pricing tiers)
+- **formSettings**: Stores all configurable pricing data. Key fields:
+  - `baseRate` / `hourlyRates` / `eventSurplus`: Legacy columns kept for compatibility
+  - `pricingConfig` (JSONB): Single source of truth for ALL pricing variables including:
+    - Hourly pricing, custom hours formula, base package price & items
+    - Guest count modifiers (%), event type surplus (%)
+    - Signature drinks list & price, matcha options & prices
+    - Canned beverage options, baked goods pricing (per-item & bulk)
+    - Alternative milk tier pricing, branding (stickers/sleeves/cart) with configurable base cups, step sizes, and per-step costs
+    - Cost range buffer for quote estimates
+  - See `PricingConfig` interface in `shared/schema.ts` for full type definition
 - **submissions**: Stores user quote submissions with name, mobile, hours, calculated cost, and status
 - **sessions**: Auth session storage (required for Replit Auth)
 - **users**: User profile storage (required for Replit Auth)
