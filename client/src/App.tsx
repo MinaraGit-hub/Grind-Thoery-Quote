@@ -11,6 +11,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={QuoteForm} />
+      <Route path="/quote" component={QuoteForm} />
       <Route path="/admin" component={AdminDashboard} />
       
       {/* Explicit 404 handler */}
