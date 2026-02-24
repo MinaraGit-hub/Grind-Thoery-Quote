@@ -162,6 +162,12 @@ export default function QuoteForm() {
 
   const handleNext = () => {
     if (!validateStep(step)) return;
+    if (step === 2) {
+      if (!formData.hasAddon) {
+        toast({ title: "Selection required", description: "Please select the base package to continue.", variant: "destructive" });
+        return;
+      }
+    }
     if (step === 3) {
       if (!formData.hours) {
         toast({ title: "Selection required", description: "Please select the number of hours.", variant: "destructive" });
@@ -395,6 +401,17 @@ export default function QuoteForm() {
                     </div>
                   </div>
                 </div>
+
+                {formData.hasAddon && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-4 p-4 rounded-xl md:rounded-2xl bg-white/10 border border-white/20 text-center"
+                  >
+                    <p className="text-sm uppercase tracking-widest opacity-60 mb-1">Base Package Total</p>
+                    <p className="text-3xl font-bold">${pc.basePackagePrice.toFixed(2)}</p>
+                  </motion.div>
+                )}
               </div>
             </FormStep>
 
