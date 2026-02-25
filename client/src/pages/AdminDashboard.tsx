@@ -1,4 +1,4 @@
-import { useSettings, useUpdateSettings, useSubmissions } from "@/hooks/use-form-data";
+import { useSettings, useUpdateSettings } from "@/hooks/use-form-data";
 import { Loader2, Save, LayoutDashboard, LogOut, Settings as SettingsIcon, DollarSign, Plus, Minus, Trash2, X, Lock, Eye } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
