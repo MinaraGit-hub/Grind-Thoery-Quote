@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useSettings, useCreateSubmission } from "@/hooks/use-form-data";
 import { CircularProgress } from "@/components/CircularProgress";
 import { FormStep } from "@/components/FormStep";
@@ -17,6 +18,8 @@ export default function QuoteForm() {
   const [direction, setDirection] = useState(0);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
+  const calendarBtnRef = useRef<HTMLButtonElement>(null);
+  const [calendarPos, setCalendarPos] = useState({ top: 0, left: 0, width: 0 });
 
   useEffect(() => {
     if (!calendarOpen) return;
@@ -361,11 +364,18 @@ export default function QuoteForm() {
                     {errors.mobileNumber && <p className="text-red-400 text-sm ml-2">{errors.mobileNumber}</p>}
                   </div>
 
-                  <div className="space-y-1 relative" ref={calendarRef}>
+                  <div className="space-y-1" ref={calendarRef}>
                     <button
+                      ref={calendarBtnRef}
                       type="button"
                       data-testid="button-event-date"
-                      onClick={() => setCalendarOpen(prev => !prev)}
+                      onClick={() => {
+                        if (calendarBtnRef.current) {
+                          const rect = calendarBtnRef.current.getBoundingClientRect();
+                          setCalendarPos({ top: rect.top, left: rect.left, width: rect.width });
+                        }
+                        setCalendarOpen(prev => !prev);
+                      }}
                       className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl text-left flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all hover:bg-white/15"
                     >
                       <CalendarDays className="w-5 h-5 opacity-50 shrink-0" />
@@ -375,71 +385,78 @@ export default function QuoteForm() {
                           : "Date of Event (optional)"}
                       </span>
                     </button>
-                    <AnimatePresence>
-                      {calendarOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -8, scale: 0.97 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: -8, scale: 0.97 }}
-                          transition={{ duration: 0.15 }}
-                          className="absolute z-50 mt-2 left-0 right-0"
-                        >
-                          <div className="bg-[#4a3f35] border border-white/20 rounded-2xl shadow-2xl overflow-hidden p-3"
-                            style={{
-                              "--rdp-accent-color": "#ffffff",
-                              "--rdp-accent-background-color": "rgba(255,255,255,0.2)",
-                              "--rdp-day-font": "inherit",
-                            } as React.CSSProperties}
-                          >
-                            <Calendar
-                              mode="single"
-                              selected={formData.eventDate ? new Date(formData.eventDate + "T00:00:00") : undefined}
-                              onSelect={(date) => {
-                                if (date) {
-                                  const iso = date.toISOString().split("T")[0];
-                                  setFormData(prev => ({ ...prev, eventDate: iso }));
-                                } else {
-                                  setFormData(prev => ({ ...prev, eventDate: "" }));
-                                }
-                                setCalendarOpen(false);
-                              }}
-                              disabled={{ before: new Date() }}
-                              classNames={{
-                                months: "flex flex-col",
-                                month: "space-y-3",
-                                caption: "flex justify-center pt-1 relative items-center text-white",
-                                caption_label: "text-sm font-semibold text-white",
-                                nav: "space-x-1 flex items-center",
-                                nav_button: "h-7 w-7 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors text-white",
-                                nav_button_previous: "absolute left-1",
-                                nav_button_next: "absolute right-1",
-                                table: "w-full border-collapse",
-                                head_row: "flex",
-                                head_cell: "text-white/40 rounded-md w-9 font-normal text-[0.75rem] text-center",
-                                row: "flex w-full mt-1",
-                                cell: "h-9 w-9 text-center text-sm p-0 relative",
-                                day: "h-9 w-9 p-0 font-normal text-white/80 hover:bg-white/15 rounded-lg transition-colors",
-                                day_selected: "bg-white text-[#6B5E51] hover:bg-white hover:text-[#6B5E51] font-semibold rounded-lg",
-                                day_today: "bg-white/10 text-white rounded-lg",
-                                day_outside: "text-white/20",
-                                day_disabled: "text-white/15 cursor-not-allowed",
-                                day_hidden: "invisible",
-                              }}
-                            />
-                            {formData.eventDate && (
-                              <button
-                                type="button"
-                                onClick={() => { setFormData(prev => ({ ...prev, eventDate: "" })); setCalendarOpen(false); }}
-                                className="w-full mt-2 py-1.5 text-xs text-white/50 hover:text-white/80 transition-colors"
-                              >
-                                Clear date
-                              </button>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </div>
+                  <AnimatePresence>
+                    {calendarOpen && createPortal(
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                        transition={{ duration: 0.15 }}
+                        style={{
+                          position: "fixed",
+                          bottom: `calc(100vh - ${calendarPos.top}px + 8px)`,
+                          left: calendarPos.left,
+                          width: calendarPos.width,
+                          zIndex: 9999,
+                        }}
+                      >
+                        <div className="bg-[#4a3f35] border border-white/20 rounded-2xl shadow-2xl overflow-hidden p-3"
+                          style={{
+                            "--rdp-accent-color": "#ffffff",
+                            "--rdp-accent-background-color": "rgba(255,255,255,0.2)",
+                            "--rdp-day-font": "inherit",
+                          } as React.CSSProperties}
+                        >
+                          <Calendar
+                            mode="single"
+                            selected={formData.eventDate ? new Date(formData.eventDate + "T00:00:00") : undefined}
+                            onSelect={(date) => {
+                              if (date) {
+                                const iso = date.toISOString().split("T")[0];
+                                setFormData(prev => ({ ...prev, eventDate: iso }));
+                              } else {
+                                setFormData(prev => ({ ...prev, eventDate: "" }));
+                              }
+                              setCalendarOpen(false);
+                            }}
+                            disabled={{ before: new Date() }}
+                            classNames={{
+                              months: "flex flex-col",
+                              month: "space-y-3",
+                              caption: "flex justify-center pt-1 relative items-center text-white",
+                              caption_label: "text-sm font-semibold text-white",
+                              nav: "space-x-1 flex items-center",
+                              nav_button: "h-7 w-7 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors text-white",
+                              nav_button_previous: "absolute left-1",
+                              nav_button_next: "absolute right-1",
+                              table: "w-full border-collapse",
+                              head_row: "flex",
+                              head_cell: "text-white/40 rounded-md w-9 font-normal text-[0.75rem] text-center",
+                              row: "flex w-full mt-1",
+                              cell: "h-9 w-9 text-center text-sm p-0 relative",
+                              day: "h-9 w-9 p-0 font-normal text-white/80 hover:bg-white/15 rounded-lg transition-colors",
+                              day_selected: "bg-white text-[#6B5E51] hover:bg-white hover:text-[#6B5E51] font-semibold rounded-lg",
+                              day_today: "bg-white/10 text-white rounded-lg",
+                              day_outside: "text-white/20",
+                              day_disabled: "text-white/15 cursor-not-allowed",
+                              day_hidden: "invisible",
+                            }}
+                          />
+                          {formData.eventDate && (
+                            <button
+                              type="button"
+                              onClick={() => { setFormData(prev => ({ ...prev, eventDate: "" })); setCalendarOpen(false); }}
+                              className="w-full mt-2 py-1.5 text-xs text-white/50 hover:text-white/80 transition-colors"
+                            >
+                              Clear date
+                            </button>
+                          )}
+                        </div>
+                      </motion.div>,
+                      document.body
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             </FormStep>
