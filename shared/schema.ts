@@ -122,6 +122,7 @@ export const submissions = pgTable("submissions", {
   id: serial("id").primaryKey(),
   fullName: text("full_name").notNull(),
   mobileNumber: text("mobile_number").notNull(),
+  eventDate: text("event_date"),
   eventType: text("event_type").notNull().default("Private Function"),
   hours: integer("hours").notNull(),
   hasAddon: boolean("has_addon").notNull().default(false),

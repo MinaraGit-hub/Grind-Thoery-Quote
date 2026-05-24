@@ -1,10 +1,11 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useSettings, useCreateSubmission } from "@/hooks/use-form-data";
 import { CircularProgress } from "@/components/CircularProgress";
 import { FormStep } from "@/components/FormStep";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2, Check, Plus, Minus } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2, Check, Plus, Minus, CalendarDays } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Calendar } from "@/components/ui/calendar";
 import logoImg from "@assets/Untitled-1_1767674078681.png";
 import grindTheoryLogo from "@assets/Untitled-1_1771895621895.png";
 import stockImage from "@assets/stock_images/modern_aesthetic_cof_0cee769b.jpg";
@@ -15,9 +16,24 @@ import { DEFAULT_PRICING_CONFIG } from "@shared/schema";
 export default function QuoteForm() {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(0);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const calendarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!calendarOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (calendarRef.current && !calendarRef.current.contains(e.target as Node)) {
+        setCalendarOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [calendarOpen]);
+
   const [formData, setFormData] = useState({
     fullName: "",
     mobileNumber: "",
+    eventDate: "",
     eventType: "",
     hours: "",
     customHours: "",
@@ -234,6 +250,7 @@ export default function QuoteForm() {
         calculatedCost: calculatedCost,
         wantEmail: wantEmail,
         emailAddress: wantEmail ? emailAddress : undefined,
+        eventDate: formData.eventDate || undefined,
       });
       setIsSubmitted(true);
     } catch (error) {
@@ -343,6 +360,86 @@ export default function QuoteForm() {
                       }}
                     />
                     {errors.mobileNumber && <p className="text-red-400 text-sm ml-2">{errors.mobileNumber}</p>}
+                  </div>
+
+                  <div className="space-y-1 relative" ref={calendarRef}>
+                    <button
+                      type="button"
+                      data-testid="button-event-date"
+                      onClick={() => setCalendarOpen(prev => !prev)}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl text-left flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all hover:bg-white/15"
+                    >
+                      <CalendarDays className="w-5 h-5 opacity-50 shrink-0" />
+                      <span className={formData.eventDate ? "text-white" : "text-white/30"}>
+                        {formData.eventDate
+                          ? new Date(formData.eventDate + "T00:00:00").toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "long", year: "numeric" })
+                          : "Date of Event (optional)"}
+                      </span>
+                    </button>
+                    <AnimatePresence>
+                      {calendarOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute z-50 mt-2 left-0 right-0"
+                        >
+                          <div className="bg-[#4a3f35] border border-white/20 rounded-2xl shadow-2xl overflow-hidden p-3"
+                            style={{
+                              "--rdp-accent-color": "#ffffff",
+                              "--rdp-accent-background-color": "rgba(255,255,255,0.2)",
+                              "--rdp-day-font": "inherit",
+                            } as React.CSSProperties}
+                          >
+                            <Calendar
+                              mode="single"
+                              selected={formData.eventDate ? new Date(formData.eventDate + "T00:00:00") : undefined}
+                              onSelect={(date) => {
+                                if (date) {
+                                  const iso = date.toISOString().split("T")[0];
+                                  setFormData(prev => ({ ...prev, eventDate: iso }));
+                                } else {
+                                  setFormData(prev => ({ ...prev, eventDate: "" }));
+                                }
+                                setCalendarOpen(false);
+                              }}
+                              disabled={{ before: new Date() }}
+                              classNames={{
+                                months: "flex flex-col",
+                                month: "space-y-3",
+                                caption: "flex justify-center pt-1 relative items-center text-white",
+                                caption_label: "text-sm font-semibold text-white",
+                                nav: "space-x-1 flex items-center",
+                                nav_button: "h-7 w-7 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors text-white",
+                                nav_button_previous: "absolute left-1",
+                                nav_button_next: "absolute right-1",
+                                table: "w-full border-collapse",
+                                head_row: "flex",
+                                head_cell: "text-white/40 rounded-md w-9 font-normal text-[0.75rem] text-center",
+                                row: "flex w-full mt-1",
+                                cell: "h-9 w-9 text-center text-sm p-0 relative",
+                                day: "h-9 w-9 p-0 font-normal text-white/80 hover:bg-white/15 rounded-lg transition-colors",
+                                day_selected: "bg-white text-[#6B5E51] hover:bg-white hover:text-[#6B5E51] font-semibold rounded-lg",
+                                day_today: "bg-white/10 text-white rounded-lg",
+                                day_outside: "text-white/20",
+                                day_disabled: "text-white/15 cursor-not-allowed",
+                                day_hidden: "invisible",
+                              }}
+                            />
+                            {formData.eventDate && (
+                              <button
+                                type="button"
+                                onClick={() => { setFormData(prev => ({ ...prev, eventDate: "" })); setCalendarOpen(false); }}
+                                className="w-full mt-2 py-1.5 text-xs text-white/50 hover:text-white/80 transition-colors"
+                              >
+                                Clear date
+                              </button>
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>

@@ -173,6 +173,7 @@ export async function registerRoutes(
           guestCount: input.guestCount || "1–30",
           hours: hoursDisplay,
           eventType: input.eventType || "Not selected",
+          eventDate: (input as any).eventDate || undefined,
           signatureDrinks: `${totalSigDrinks} drinks`,
           customUpgrades: `${totalMatcha} matcha, ${(input.cannedBeverages && input.cannedBeverages !== "none") ? input.cannedBeverages + " cans" : "No cans"}`,
           bakedGoods: `${bakedGoodsData?.useBulk ? `${pc?.bakedGoodsBulkCount ?? 40} Bulk Pack` : (bakedGoodsData?.count || 0) + " pastries"}`,

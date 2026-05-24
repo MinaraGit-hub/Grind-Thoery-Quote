@@ -677,6 +677,9 @@ export default function AdminDashboard() {
 
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem label="Event Type" value={selectedSubmission.eventType} />
+                {selectedSubmission.eventDate && (
+                  <DetailItem label="Event Date" value={new Date(selectedSubmission.eventDate + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })} />
+                )}
                 <DetailItem label="Guest Count" value={selectedSubmission.guestCount} />
                 <DetailItem label="Hours" value={`${selectedSubmission.hours} hours`} />
                 <DetailItem label="Base Package" value={selectedSubmission.hasAddon ? 'Yes' : 'No'} />

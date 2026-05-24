@@ -23,6 +23,7 @@ export interface QuoteSummary {
   guestCount: string;
   hours: string;
   eventType: string;
+  eventDate?: string;
   signatureDrinks: string;
   customUpgrades: string;
   bakedGoods: string;
@@ -41,6 +42,7 @@ function buildCustomerHtml(summary: QuoteSummary): string {
       <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <h2 style="color: #6B5E51; border-bottom: 1px solid #e0d5ca; padding-bottom: 10px;">Quote Estimate Summary</h2>
         <ul style="list-style: none; padding: 0; color: #6B5E51;">
+          ${summary.eventDate ? `<li style="padding: 8px 0; border-bottom: 1px solid #f0e8e0;"><strong>Event date:</strong> ${summary.eventDate}</li>` : ""}
           <li style="padding: 8px 0; border-bottom: 1px solid #f0e8e0;"><strong>Event package:</strong> ${summary.eventPackage}</li>
           <li style="padding: 8px 0; border-bottom: 1px solid #f0e8e0;"><strong>Guest count:</strong> ${summary.guestCount}</li>
           <li style="padding: 8px 0; border-bottom: 1px solid #f0e8e0;"><strong>Number of hours:</strong> ${summary.hours}</li>
@@ -80,6 +82,7 @@ function buildAdminHtml(summary: QuoteSummary): string {
         
         <h2 style="color: #6B5E51; border-bottom: 1px solid #e0d5ca; padding-bottom: 10px; margin-top: 20px;">Quote Details</h2>
         <ul style="list-style: none; padding: 0; color: #6B5E51;">
+          ${summary.eventDate ? `<li style="padding: 8px 0; border-bottom: 1px solid #f0e8e0;"><strong>Event date:</strong> ${summary.eventDate}</li>` : ""}
           <li style="padding: 8px 0; border-bottom: 1px solid #f0e8e0;"><strong>Event package:</strong> ${summary.eventPackage}</li>
           <li style="padding: 8px 0; border-bottom: 1px solid #f0e8e0;"><strong>Guest count:</strong> ${summary.guestCount}</li>
           <li style="padding: 8px 0; border-bottom: 1px solid #f0e8e0;"><strong>Number of hours:</strong> ${summary.hours}</li>
