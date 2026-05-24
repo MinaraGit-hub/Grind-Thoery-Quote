@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, CheckCircle2, ChevronDown, Loader2, Check, Plus, Minus, CalendarDays } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Calendar } from "@/components/ui/calendar";
-import logoImg from "@assets/Untitled-1_1767674078681.png";
 import grindTheoryLogo from "@assets/Untitled-1_1771895621895.png";
 import stockImage from "@assets/stock_images/modern_aesthetic_cof_0cee769b.jpg";
 import Untitled_1 from "@assets/Untitled-1.png";
