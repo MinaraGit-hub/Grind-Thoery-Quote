@@ -17,6 +17,7 @@ export default function QuoteForm() {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(0);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState<Date>(new Date());
   const calendarRef = useRef<HTMLDivElement>(null);
   const calendarBtnRef = useRef<HTMLButtonElement>(null);
   const calendarPopupRef = useRef<HTMLDivElement>(null);
@@ -410,6 +411,8 @@ export default function QuoteForm() {
                       >
                         <Calendar
                           mode="single"
+                          month={calendarMonth}
+                          onMonthChange={setCalendarMonth}
                           selected={formData.eventDate ? new Date(formData.eventDate + "T00:00:00") : undefined}
                           onSelect={(date) => {
                             if (date) {
@@ -421,11 +424,48 @@ export default function QuoteForm() {
                             setCalendarOpen(false);
                           }}
                           disabled={{ before: new Date() }}
+                          components={{
+                            Caption: ({ displayMonth }) => {
+                              const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+                              const currentYear = new Date().getFullYear();
+                              const years = Array.from({ length: 6 }, (_, i) => currentYear + i);
+                              return (
+                                <div className="flex items-center justify-center gap-2 px-1 py-1">
+                                  <select
+                                    value={displayMonth.getMonth()}
+                                    onChange={(e) => {
+                                      const next = new Date(displayMonth);
+                                      next.setMonth(Number(e.target.value));
+                                      setCalendarMonth(next);
+                                    }}
+                                    className="bg-white/10 text-white text-sm font-semibold rounded-lg px-2 py-1 border border-white/20 focus:outline-none focus:ring-1 focus:ring-white/40 cursor-pointer"
+                                  >
+                                    {months.map((m, i) => (
+                                      <option key={m} value={i} className="bg-[#4a3f35] text-white">{m}</option>
+                                    ))}
+                                  </select>
+                                  <select
+                                    value={displayMonth.getFullYear()}
+                                    onChange={(e) => {
+                                      const next = new Date(displayMonth);
+                                      next.setFullYear(Number(e.target.value));
+                                      setCalendarMonth(next);
+                                    }}
+                                    className="bg-white/10 text-white text-sm font-semibold rounded-lg px-2 py-1 border border-white/20 focus:outline-none focus:ring-1 focus:ring-white/40 cursor-pointer"
+                                  >
+                                    {years.map((y) => (
+                                      <option key={y} value={y} className="bg-[#4a3f35] text-white">{y}</option>
+                                    ))}
+                                  </select>
+                                </div>
+                              );
+                            }
+                          }}
                           classNames={{
                             months: "flex flex-col",
                             month: "space-y-3",
                             caption: "flex justify-center pt-1 relative items-center text-white",
-                            caption_label: "text-sm font-semibold text-white",
+                            caption_label: "hidden",
                             nav: "space-x-1 flex items-center",
                             nav_button: "h-7 w-7 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors text-white",
                             nav_button_previous: "absolute left-1",
