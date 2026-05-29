@@ -1,5 +1,5 @@
 deployment:
   tasks:
-    - export NODE_ENV=production
-    - npm ci --production
+    - npm install
     - npm run build
+    - npm prune --production
