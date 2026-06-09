@@ -13,7 +13,7 @@ services:
           name: grind-quote-db
           property: connectionString
       - key: SESSION_SECRET
-
+        generateValue: true
 
 databases:
   - name: grind-quote-db
