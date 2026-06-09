@@ -20,4 +20,3 @@ services:
 databases:
   - name: grind-quote-db
     plan: free
-    postgresVersion: 15
