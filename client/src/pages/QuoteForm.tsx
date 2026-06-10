@@ -835,7 +835,6 @@ export default function QuoteForm() {
                         </button>
                       </div>
                     </div>
-                    <p className="text-xs opacity-50 text-right">Pricing based on event duration (+${pc.altMilkExtraPerHour} per tier)</p>
                   </section>
                 </div>
               </div>
