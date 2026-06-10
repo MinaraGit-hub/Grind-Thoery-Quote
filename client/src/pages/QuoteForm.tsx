@@ -305,7 +305,7 @@ export default function QuoteForm() {
 
   const hourOptions = Object.entries(pc.hourlyPricing)
     .sort(([a], [b]) => parseInt(a) - parseInt(b))
-    .map(([hours, price]) => ({ val: hours, label: `${hours} Hours (+$${price})` }));
+    .map(([hours, price]) => ({ val: hours, label: `${hours} Hours` }));
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center py-4 md:py-12 px-4 md:px-6 overflow-x-hidden">
@@ -315,7 +315,7 @@ export default function QuoteForm() {
       <div className="hidden md:block w-full max-w-5xl mb-8">
         <CircularProgress currentStep={step} totalSteps={displaySteps} className="scale-100" />
       </div>
-      <div className="w-full flex-1 md:flex-none max-w-5xl md:min-h-[600px] bg-card rounded-2xl md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-card-border/30 md:border-card-border/50">
+      <div className="w-full flex-1 md:flex-none max-w-5xl md:min-h-[600px] bg-card rounded-2xl md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-card-border/30">
         
         <div 
           className="w-full md:w-5/12 bg-cover bg-center h-32 md:h-auto shrink-0 rounded-t-2xl md:rounded-none"
@@ -344,7 +344,7 @@ export default function QuoteForm() {
                       type="text"
                       placeholder="Full Name"
                       data-testid="input-full-name"
-                      className={`w-full bg-white/10 border ${errors.fullName ? 'border-red-500' : 'border-white/20'} rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30`}
+                      className={`w-full bg-white/10 border ${errors.fullName ? 'border-red-500' : 'border-white/20'} rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 text-white`}
                       value={formData.fullName}
                       onChange={(e) => {
                         setFormData({ ...formData, fullName: e.target.value });
@@ -358,7 +358,7 @@ export default function QuoteForm() {
                       type="tel"
                       placeholder="Mobile Number"
                       data-testid="input-mobile"
-                      className={`w-full bg-white/10 border ${errors.mobileNumber ? 'border-red-500' : 'border-white/20'} rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30`}
+                      className={`w-full bg-white/10 border ${errors.mobileNumber ? 'border-red-500' : 'border-white/20'} rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 text-white`}
                       value={formData.mobileNumber}
                       onChange={(e) => {
                         setFormData({ ...formData, mobileNumber: e.target.value });
@@ -380,7 +380,7 @@ export default function QuoteForm() {
                         }
                         setCalendarOpen(prev => !prev);
                       }}
-                      className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl text-left flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all hover:bg-white/15"
+                      className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl text-left flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-white/30 text-white"
                     >
                       <CalendarDays className="w-5 h-5 opacity-50 shrink-0" />
                       <span className={formData.eventDate ? "text-white" : "text-white/30"}>
@@ -518,7 +518,7 @@ export default function QuoteForm() {
                 </div>
 
                 <div className="mt-8 space-y-6">
-                  <label className="flex items-center gap-3 p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none" data-testid="checkbox-addon">
+                  <label className="flex items-center gap-3 p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none" data-testid="label-addon">
                     <div className="relative flex items-center justify-center">
                       <input
                         type="checkbox"
@@ -538,14 +538,14 @@ export default function QuoteForm() {
                     <p className="text-lg font-semibold opacity-70">Guest Count:</p>
                     <div className="relative">
                       <select 
-                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30 text-white"
                         value={formData.guestCount}
                         onChange={(e) => setFormData({ ...formData, guestCount: e.target.value })}
                         data-testid="select-guest-count"
                       >
                         {Object.entries(pc.guestModifiers).map(([range, pct]) => (
                           <option key={range} value={range} className="bg-[#6B5E51]">
-                            {range} (+{pct}%)
+                            {range}
                           </option>
                         ))}
                       </select>
@@ -598,7 +598,7 @@ export default function QuoteForm() {
                       min={pc.customHoursMin}
                       placeholder="Enter number of hours"
                       data-testid="input-custom-hours"
-                      className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+                      className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 text-white"
                       value={formData.customHours}
                       onChange={(e) => setFormData(prev => ({ ...prev, customHours: e.target.value }))}
                     />
@@ -648,7 +648,7 @@ export default function QuoteForm() {
                         <input
                           type="number"
                           min="0"
-                          className="bg-transparent text-lg md:text-xl font-bold w-8 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="bg-transparent text-lg md:text-xl font-bold w-8 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-white"
                           value={formData.signatureDrinks[drink] || 0}
                           onChange={(e) => {
                             const val = parseInt(e.target.value) || 0;
@@ -692,7 +692,7 @@ export default function QuoteForm() {
                           <input
                             type="number"
                             min="0"
-                            className="bg-transparent text-lg md:text-xl font-bold w-8 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="bg-transparent text-lg md:text-xl font-bold w-8 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-white"
                             value={formData.matchaUpgrade[drink] || 0}
                             onChange={(e) => {
                               const val = parseInt(e.target.value) || 0;
@@ -720,14 +720,14 @@ export default function QuoteForm() {
                     <p className="text-lg font-semibold opacity-70">Machine Canned Beverages Upgrade:</p>
                     <div className="relative">
                       <select 
-                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30 text-white"
                         value={formData.cannedBeverages}
                         onChange={(e) => setFormData({ ...formData, cannedBeverages: e.target.value })}
                         data-testid="select-canned"
                       >
                         {pc.cannedOptions.map(opt => (
                           <option key={opt.value} value={opt.value} className="bg-[#6B5E51]">
-                            {opt.label} {opt.price > 0 ? `(+$${opt.price})` : ""}
+                            {opt.label}
                           </option>
                         ))}
                       </select>
@@ -758,7 +758,7 @@ export default function QuoteForm() {
                         <input
                           type="number"
                           min="0"
-                          className="bg-transparent text-lg md:text-xl font-bold w-10 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="bg-transparent text-lg md:text-xl font-bold w-10 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-white"
                           value={formData.bakedGoods.useBulk ? 0 : formData.bakedGoods.count}
                           onChange={(e) => {
                             const val = parseInt(e.target.value) || 0;
@@ -786,7 +786,7 @@ export default function QuoteForm() {
                       </div>
                     </div>
 
-                    <label className="flex items-center gap-4 p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none" data-testid="checkbox-bulk-baked">
+                    <label className="flex items-center gap-4 p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none" data-testid="label-bulk-baked">
                       <div className="relative flex items-center justify-center">
                         <input
                           type="checkbox"
@@ -820,7 +820,7 @@ export default function QuoteForm() {
                         <input
                           type="number"
                           min="0"
-                          className="bg-transparent text-lg md:text-xl font-bold w-10 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="bg-transparent text-lg md:text-xl font-bold w-10 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-white"
                           value={formData.alternativeMilk}
                           onChange={(e) => {
                             const val = parseInt(e.target.value) || 0;
@@ -849,7 +849,7 @@ export default function QuoteForm() {
                     <p className="text-lg font-semibold opacity-70">Cup Customisation</p>
                     <div className="relative">
                       <select 
-                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30 text-white"
                         value={formData.branding.cupCustomization}
                         onChange={(e) => setFormData({ 
                           ...formData, 
@@ -896,7 +896,7 @@ export default function QuoteForm() {
                             type="number"
                             min={formData.branding.cupCustomization === "stickers" ? pc.stickerBaseCups : pc.sleeveBaseCups}
                             step={formData.branding.cupCustomization === "stickers" ? pc.stickerExtraCupStep : pc.sleeveExtraCupStep}
-                            className="bg-transparent text-2xl md:text-3xl font-bold w-20 md:w-24 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="bg-transparent text-2xl md:text-3xl font-bold w-20 md:w-24 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-white"
                             value={formData.branding.cupCustomization === "stickers" ? formData.branding.stickerCups : formData.branding.sleeveCups}
                             onChange={(e) => {
                               const baseCups = formData.branding.cupCustomization === "stickers" ? pc.stickerBaseCups : pc.sleeveBaseCups;
@@ -938,7 +938,7 @@ export default function QuoteForm() {
                     <p className="text-lg font-semibold opacity-70">Cart Branding</p>
                     <div className="relative">
                       <select 
-                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl md:rounded-2xl px-6 py-4 text-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/30 text-white"
                         value={formData.branding.cartBranding}
                         onChange={(e) => setFormData({ 
                           ...formData, 
@@ -991,7 +991,7 @@ export default function QuoteForm() {
                     <p className="text-2xl md:text-3xl font-bold">${calculatedCost} – ${calculatedCost + pc.costRangeBuffer}</p>
                   </div>
 
-                  <label className="flex items-center gap-3 p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none mt-4" data-testid="checkbox-want-email">
+                  <label className="flex items-center gap-3 p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all select-none mt-4" data-testid="label-email">
                     <div className="relative flex items-center justify-center">
                       <input
                         type="checkbox"
@@ -1014,7 +1014,7 @@ export default function QuoteForm() {
                         type="email"
                         placeholder="Enter your email address"
                         data-testid="input-email"
-                        className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-4 text-xl placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/30 text-white"
                         value={emailAddress}
                         onChange={(e) => setEmailAddress(e.target.value)}
                       />
