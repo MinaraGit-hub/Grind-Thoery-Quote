@@ -668,7 +668,6 @@ export default function QuoteForm() {
                       </div>
                     </div>
                   ))}
-                  <p className="text-sm opacity-60 text-center mt-4">Each signature drink adds ${pc.signatureDrinkPrice.toFixed(2)} to the quote</p>
                 </div>
               </div>
             </FormStep>
@@ -801,40 +800,6 @@ export default function QuoteForm() {
                         <span className="text-sm opacity-60">${pc.bakedGoodsBulkPrice.toFixed(2)} Flat Fee</span>
                       </div>
                     </label>
-                  </section>
-
-                  <section className="space-y-4 pt-4 border-t border-white/10">
-                    <div className="flex flex-col gap-1">
-                      <h2 className="text-2xl font-bold">Alternative Milk</h2>
-                      <p className="text-sm opacity-60">Almond milks, Oat milk, Lactose-free milk</p>
-                    </div>
-                    <div className="flex items-center justify-between p-4 md:p-6 rounded-xl md:rounded-2xl bg-white/5 border border-white/10">
-                      <span className="text-base md:text-lg font-medium">Cost /2hrs</span>
-                      <div className="flex items-center gap-4 md:gap-6 bg-white/10 rounded-lg md:rounded-2xl py-2 md:py-3 px-4 md:px-6">
-                        <button 
-                          onClick={() => setFormData(prev => ({ ...prev, alternativeMilk: Math.max(0, prev.alternativeMilk - 1) }))}
-                          className="p-1.5 md:p-2 hover:bg-white/20 rounded-lg md:rounded-xl transition-colors"
-                        >
-                          <Minus className="w-5 h-5 md:w-6 md:h-6" />
-                        </button>
-                        <input
-                          type="number"
-                          min="0"
-                          className="bg-transparent text-lg md:text-xl font-bold w-10 md:w-12 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-white"
-                          value={formData.alternativeMilk}
-                          onChange={(e) => {
-                            const val = parseInt(e.target.value) || 0;
-                            setFormData(prev => ({ ...prev, alternativeMilk: Math.max(0, val) }));
-                          }}
-                        />
-                        <button 
-                          onClick={() => setFormData(prev => ({ ...prev, alternativeMilk: prev.alternativeMilk + 1 }))}
-                          className="p-1.5 md:p-2 hover:bg-white/20 rounded-lg md:rounded-xl transition-colors"
-                        >
-                          <Plus className="w-5 h-5 md:w-6 md:h-6" />
-                        </button>
-                      </div>
-                    </div>
                   </section>
                 </div>
               </div>
