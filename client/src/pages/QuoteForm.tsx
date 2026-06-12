@@ -710,9 +710,6 @@ export default function QuoteForm() {
                         </div>
                       </div>
                     ))}
-                    <p className="text-xs opacity-50 text-right">
-                      {Object.entries(pc.matchaOptions).map(([name, price]) => `${name.split(' ')[0]}: +$${price.toFixed(2)}`).join(' | ')}
-                    </p>
                   </section>
 
                   <section className="space-y-3">
